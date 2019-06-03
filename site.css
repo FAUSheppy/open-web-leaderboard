@@ -1,0 +1,87 @@
+/* general */
+body{
+    background: #323232;
+}
+
+/* ############### TOP NAVBAR ############# */
+.top-spacer{
+
+}
+
+.top-bar{
+    position: fixed;
+    background-color: orange;
+    height: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+
+    left: 0;
+    top: 0;
+    right: 0;
+}
+
+.top-button{
+    height: 80%;
+    float: left;
+    margin-right: 10px;
+    
+    background-color: red;
+
+    font-weight: bold;
+    color: #583535;
+}
+
+.input-field{
+    float: left;
+    margin-right: 10px;
+}
+
+/* #################### LEADERBOARDS ##################### */
+.leaderboard-container{
+    width: 80%;
+    margin-top: 60px;
+    margin-bottom: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: green;
+}
+
+.column-names{
+    width: 100%;
+    background-color: green;
+}
+
+.line-even{
+    width: 100%;    
+    background-color: grey;
+}
+.line-odd{
+    width: 100%;    
+    background-color: lightgrey;
+}
+
+/* ######################## FOOTER ####################### */ 
+.footer{
+    text-align: center;
+    font-weight: bold;
+    font-size: 25px;
+    position: fixed;
+    width: 100%;
+    background-color: grey;
+    bottom: 0;
+    left: 0;
+    height: 30px;
+    
+}
+
+.footerLink{
+    margin-top: 0;
+    padding-top: 0;
+    font-size: 12pt;
+    text-decoration: none;
+    color: black;
+}
+.mid{
+    margin-right: 25%;
+    margin-left: 25%;
+}
