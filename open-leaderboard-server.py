@@ -74,9 +74,10 @@ def leaderboard():
     start = flask.request.args.get(PARAM_START)
     page  = flask.request.args.get("page")
 
+    # intentional double if, page is supposed to overwrite start #
     if start:
         start = int(start)
-    elif page:
+    if page:
         start = SEGMENT * int(page)
     else:
         start = 0

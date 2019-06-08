@@ -1,7 +1,7 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="static/site.css">
-        <script src="static/buttons.js"></script>
+        <script src="static/buttons.js" defer></script>
     </head>
     <body>
         <div class=top-bar>
@@ -9,8 +9,8 @@
             <button type="button" onclick=backward()  class=top-button>Backward</button>
             <button type="button" onclick=firstPage() class=top-button>Top 100 </button>
 
-            <input type="text"   class=input-field placeholder="search player...">
-            <input type="number" class=input-field placeholder="goto rank...">
+            <input id="getPlayer" type="text"   class=input-field placeholder="search player...">
+            <input id="gotoRank"  type="number" class=input-field placeholder="goto rank...">
         </div>
         <div class=leaderboard-container>
             <div class=colum-names>{{ columNames  }}</div>                    

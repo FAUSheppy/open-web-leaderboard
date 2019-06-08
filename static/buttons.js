@@ -44,3 +44,17 @@ function firstPage(){
         window.location.href = href.split(parameterSeperator)[0]
     }
 }
+
+/* input fields */
+var gotoRankInputField = document.getElementById("gotoRank");
+gotoRankInputField.addEventListener("keyup", function(event) {
+    if (event.key == "Enter") {
+        event.preventDefault();
+        var url  = new URL(window.location.href)
+        var rank = gotoRankInputField.value
+        var page = Math.trunc((rank - 1)/100)
+        url.searchParams.set("page", page)
+        url.searchParams.set("goto", rank)
+        window.location.href = url.href
+    }
+});
