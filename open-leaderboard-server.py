@@ -97,19 +97,20 @@ def send_js(path):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Start open-leaderboard')
+    parser = argparse.ArgumentParser(description='Start open-leaderboard', \
+                                        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--rating-server', default=SERVER, \
-            help='Compatible rating server to query, default %(default)')
+            help='Compatible rating server to query')
     parser.add_argument('--request-url', default=LOCATION, \
-            help='API location for rating range, default %(default)')
+            help='API location for rating range')
     parser.add_argument('--param-start', default=PARAM_START, \
-            help='Name of parameter annotating the start of the rating range, default %(default)')
+            help='Name of parameter annotating the start of the rating range')
     parser.add_argument('--param-end', default=PARAM_END, \
-            help='Name of parameter annotating the end of the rating range, default %(default)')
+            help='Name of parameter annotating the end of the rating range')
     parser.add_argument('--interface', default="localhost", \
-            help='Interface on which flask (this server) will take requests on, default %(default)')
+            help='Interface on which flask (this server) will take requests on')
     parser.add_argument('--port', default="5002", \
-            help='Port on which flask (this server) will take requests on, default %(default)')
+            help='Port on which flask (this server) will take requests on')
     args = parser.parse_args()
 
     SERVER      = args.rating_server
