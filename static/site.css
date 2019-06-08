@@ -47,10 +47,11 @@ body{
     background-color: green;
 }
 
-.column-names{
+.colum-names{
     width: 100%;
     font-weight: bold;
     background-color: green;
+    font-weight: bold;
 }
 
 .line-even{
