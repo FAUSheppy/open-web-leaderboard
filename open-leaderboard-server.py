@@ -88,7 +88,13 @@ def leaderboard():
     if len(players) > 100:
         raise ValueError("Bad reponse from rating server")
 
-    columContent = "LOL"
+    columContent = flask.Markup(flask.render_template("playerLine.html", \
+                                        playerRank="Rank", \
+                                        playerName="Player", \
+                                        playerRatin="Rating", \
+                                        playerGames="Games", \
+                                        playerWinratio="Winratio"))
+
     
     finalResponse = flask.render_template("base.html", playerList=players, \
                                                         columNames=columContent, \
