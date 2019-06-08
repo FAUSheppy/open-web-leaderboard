@@ -1,0 +1,11 @@
+*.swp
+*.txt
+*.ncsv
+*.out
+*.log
+*.lol
+pass.secret
+__pychache__/
+*.pyc
+build/
+configparse_wrapper/
