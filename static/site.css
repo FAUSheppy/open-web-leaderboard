@@ -48,6 +48,7 @@ body{
 
 .column-names{
     width: 100%;
+    font-weight: bold;
     background-color: green;
 }
 
