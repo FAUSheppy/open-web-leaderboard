@@ -3,6 +3,10 @@ function forward(){
     var url   = new URL(window.location.href)
     var start = url.searchParams.get("start")
     var page  = url.searchParams.get("page")
+
+    /* clean URL from unessesary parameters */
+    url.searchParams.delete("goto")
+    url.searchParams.delete("start")
     
     if(page){
         page = parseInt(page) + 1
@@ -21,6 +25,10 @@ function backward(){
     var url   = new URL(window.location.href)
     var start = url.searchParams.get("start")
     var page  = url.searchParams.get("page")
+   
+    /* clean URL from unessesary parameters */
+    url.searchParams.delete("goto")
+    url.searchParams.delete("start")
     
     if(page){
         page = parseInt(page) - 1
@@ -40,6 +48,11 @@ function backward(){
 function firstPage(){
     var href = window.location.href
     var parameterSeperator = "?"
+
+    /* clean URL from unessesary parameters */
+    url.searchParams.delete("goto")
+    url.searchParams.delete("start")
+
     if(href.includes(parameterSeperator)){
         window.location.href = href.split(parameterSeperator)[0]
     }
