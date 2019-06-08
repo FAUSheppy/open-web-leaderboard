@@ -1,12 +1,14 @@
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="static/site.css">
+        <script src="static/buttons.js"></script>
     </head>
     <body>
         <div class=top-bar>
-            <div class=top-button>Forward</div>
-            <div class=top-button>Backward</div>
-            <div class=top-button>Top 100</div>
+            <button type="button" onclick=forward()   class=top-button>Forward </button>
+            <button type="button" onclick=backward()  class=top-button>Backward</button>
+            <button type="button" onclick=firstPage() class=top-button>Top 100 </button>
+
             <input class=input-field>
             <input class=input-field>
         </div>

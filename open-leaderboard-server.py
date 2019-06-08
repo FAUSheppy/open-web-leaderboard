@@ -53,6 +53,18 @@ class Player:
         # mark returned string as preformated html #
         return flask.Markup(string)
         
+def requestRange(start, end):
+    '''Request a range from the rating server'''
+
+    # request information from rating server #
+    requestURL = BASE_URL.format(server=SERVER, \
+                                    path=LOCATION, \
+                                    paramStart=PARAM_START, \
+                                    paramEnd=PARAM_END, \
+                                    start=start, \
+                                    end=end)
+
+    return str(requests.get(requestURL).content, "utf-8")
 
 @app.route('/leaderboard')
 def leaderboard():
@@ -71,15 +83,14 @@ def leaderboard():
 
     end = start + SEGMENT
 
-    # request information from rating server #
-    requestURL = BASE_URL.format(server=SERVER, \
-                                    path=LOCATION, \
-                                    paramStart=PARAM_START, \
-                                    paramEnd=PARAM_END, \
-                                    start=start, \
-                                    end=end)
 
-    responseString = str(requests.get(requestURL).content, "utf-8")
+    # request and check if we are within range #
+    responseString = requestRange(start, end)
+    if "MAXENTRY:" in responseString:
+        maxentry = int(responseString.split(":")[1])
+        start = maxentry - SEGMENT - 1
+        end   = maxentry - 1
+        responseString = requestRange(start, end)
 
     # create relevant html-lines from player
     players      = [Player(line) for line in responseString.split("\n")]

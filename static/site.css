@@ -11,9 +11,9 @@ body{
 .top-bar{
     position: fixed;
     background-color: orange;
-    height: 20px;
     padding-bottom: 10px;
     padding-top: 10px;
+    padding-left: 10px;
 
     left: 0;
     top: 0;
@@ -23,6 +23,7 @@ body{
 .top-button{
     height: 80%;
     float: left;
+    
     margin-right: 10px;
     
     background-color: red;
