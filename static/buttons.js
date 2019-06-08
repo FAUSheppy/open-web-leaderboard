@@ -49,10 +49,6 @@ function firstPage(){
     var href = window.location.href
     var parameterSeperator = "?"
 
-    /* clean URL from unessesary parameters */
-    url.searchParams.delete("goto")
-    url.searchParams.delete("start")
-
     if(href.includes(parameterSeperator)){
         window.location.href = href.split(parameterSeperator)[0]
     }
