@@ -20,7 +20,11 @@ class Player:
         '''Initialize a player object later to be serialized to HTML'''
 
         # parse input line #
-        name, playerID, rating, games, wins = line.split(SEPERATOR)
+        try:
+            name, playerID, rating, games, wins = line.split(SEPERATOR)
+        except ValueError as e:
+            print("Failed to parse line: {}".format(line))
+            raise e
        
         # set relevant values #
         self.name     = name
