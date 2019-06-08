@@ -12,14 +12,13 @@
         </div>
         <div class=leaderboard-container>
             <div class=colum-names>{{ columNames  }}</div>                    
-            {% set count = 1 %}
+            {% set count = start+1 %}
             {% for player in playerList %}    
                 {% if count % 2 == 0 %}
-                    <div class=line-even>{{ player.getLineHTML() }}</div>
+                    <div class=line-even>{{ player.getLineHTML(count) }}</div>
                 {% else %}
-                    <div class=line-odd>{{ player.getLineHTML() }}</div>
+                    <div class=line-odd>{{ player.getLineHTML(count) }}</div>
                 {% endif %}
-                <option value="">{{country}}</option>
                 {% set count = count + 1 %}
             {% endfor %}
         </div>

@@ -13,13 +13,42 @@ PARAM_END   = "end"
 
 BASE_URL    = "http://{server}{path}?{paramStart}={start}&{paramEnd}={end}"
 SEGMENT     = 100
+SEPERATOR   = ','
 
 class Player:
     def __init__(self, line):
-        pass
+        '''Initialize a player object later to be serialized to HTML'''
 
-    def getLineHTML(self):
-        pass
+        # parse input line #
+        name, playerID, rating, games, wins = line.split(SEPERATOR)
+       
+        # set relevant values #
+        self.name     = name
+        self.playerID = playerID
+        self.rating   = int(float(rating))
+        self.games    = int(games)
+        self.wins     = int(wins)
+        self.loses    = self.games - self.wins
+
+        # determine winratio #
+        if self.games == 0:
+            self.winratio = "N/A"
+        else:
+            self.winratio = str(int(self.wins/self.games * 100))
+
+    def getLineHTML(self, rank):
+        '''Build a single line for a specific player in the leaderboard'''
+
+        string = flask.render_template("playerLine.html", \
+                                        playerRank = rank, \
+                                        playerName = self.name, \
+                                        playerRating = self.rating, \
+                                        playerGames = self.games, \
+                                        playerWinratio = self.winratio)
+
+        # mark returned string as preformated html #
+        return flask.Markup(string)
+        
 
 @app.route('/leaderboard')
 def leaderboard():
@@ -46,32 +75,25 @@ def leaderboard():
                                     start=start, \
                                     end=end)
 
-    response = str(requests.get(requestURL), "utf-8")
+    responseString = str(requests.get(requestURL).content, "utf-8")
 
     # create relevant html-lines from player
-    players      = [Player(line) for line in response.split("\n")]
-    playersHTMLs = [p.getLineHTML() for p in players]
+    players      = [Player(line) for line in responseString.split("\n")]
 
     # sanity check reponse #
     if len(players) > 100:
         raise ValueError("Bad reponse from rating server")
 
-    # template html #
-    leaderBoardColumnNames = "<div class=colum-names>{}</div>"
-    leaderBoardEvenLine    = "<div class=line-even>{}</div>"
-    leaderBoardOddLine     = "<div class=line-odd>{}</div>"
-
     columContent = "LOL"
-    leaderBoardContent = leaderBoardColumnNames.format(columContent)
     
-    for i in range(0, len(players)):
-        if i%2 == 0:
-            leaderBoardContent += leaderBoardEvenLine.format(players[i].getLineHTML())
-        else:
-            leaderBoardContent += leaderBoardOdd.format(players[i].getLineHTML())
-    
-    finalResponse = render_template("base.html", 
+    finalResponse = flask.render_template("base.html", playerList=players, \
+                                                        columNames=columContent, \
+                                                        start=start)
     return finalResponse
+
+@app.route('/static/<path:path>')
+def send_js(path):
+    return send_from_directory('static', path)
 
 
 if __name__ == "__main__":

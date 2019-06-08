@@ -52,12 +52,48 @@ body{
 }
 
 .line-even{
-    width: 100%;    
+    width: 100%;
     background-color: grey;
+    overflow: hidden;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 .line-odd{
     width: 100%;    
     background-color: lightgrey;
+    overflow: hidden;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+/* ############# PLAYER INFORMATION IN LINES ############# */ 
+.playerRank{
+    float: left;
+    width: 10%;
+}
+
+.playerName{
+    float: left;
+    width: 30%;
+}
+
+.playerRating{
+    float: right;
+    width: 20%;
+    text-align: right;
+
+}
+
+.playerGames{
+    float: right;
+    width: 20%;
+    text-align: right;
+}
+
+.playerWinratio{
+    float: right;
+    width: 20%;
+    text-align: center;
 }
 
 /* ######################## FOOTER ####################### */ 
