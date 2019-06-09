@@ -29,12 +29,12 @@ class Player:
             raise e
        
         # set relevant values #
-        self.name     = name
-        self.playerID = playerID
-        self.rating   = int(float(rating))
-        self.games    = int(games)
-        self.wins     = int(wins)
-        self.loses    = self.games - self.wins
+        self.name       = name
+        self.playerID   = playerID
+        self.rating     = int(float(rating))
+        self.games      = int(games)
+        self.wins       = int(wins)
+        self.loses      = self.games - self.wins
 
         # determine winratio #
         if self.games == 0:
@@ -84,18 +84,18 @@ def leaderboard():
 
     # handle find player request #
     cannotFindPlayer = ""
+    searchName = ""
+
     if playerName:
         playersWithRankUrl = FIND_PLAYER.format(server=SERVER, pname=playerName)
         playersWithRank    = str(requests.get(playersWithRankUrl).content, "utf-8").split("\n")
+        searchName, playerID, rating, games, win, rank = playersWithRank[0].split(SEPERATOR)
 
         if len(playersWithRank) == 1 and playersWithRank[0] == "":
             cannotFindPlayer = flask.Markup("<div class=noPlayerFound>No player of that name</div>")
             start = 0
-        elif len(playersWithRank) == 1:
-            rank = int(playersWithRank[0].split(SEPERATOR)[-1])
-            start = rank - (rank % SEGMENT)
         else:
-            rank = int(playersWithRank[0].split(SEPERATOR)[-1])
+            rank = int(rank)
             start = rank - (rank % SEGMENT)
 
     end = start + SEGMENT
@@ -136,7 +136,8 @@ def leaderboard():
                                                         columNames=columContent, \
                                                         start=start, \
                                                         endOfBoardIndicator=endOfBoardIndicator, \
-                                                        findPlayer=cannotFindPlayer)
+                                                        findPlayer=cannotFindPlayer, \
+                                                        searchName=searchName)
     return finalResponse
 
 @app.route('/static/<path:path>')
