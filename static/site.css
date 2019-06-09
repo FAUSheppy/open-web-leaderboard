@@ -47,6 +47,14 @@ body{
     width: 100px;
 }
 
+.noPlayerFound{
+    background: red;
+    float: left;
+    width: 180px;
+    text-align: center;
+    font-weight: bold;
+}
+
 /* #################### LEADERBOARDS ##################### */
 .leaderboard-container{
     width: 80%;

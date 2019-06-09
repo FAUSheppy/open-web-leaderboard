@@ -6,6 +6,10 @@ var buttonForward  = document.getElementById("button-forward")
 var buttonFirst    = document.getElementById("button-first")
 var isLastPage     = document.getElementById("eof")
 
+/* clean URL from unessesary parameters */
+url.searchParams.delete("goto")
+url.searchParams.delete("string")
+
 /* disable buttons if nessesary */
 if(!page || page == "0"){
     buttonBackward.disabled = true
@@ -22,9 +26,6 @@ if(isLastPage){
 
 function forward(){
 
-    /* clean URL from unessesary parameters */
-    url.searchParams.delete("goto")
-
     if(page){
         page = parseInt(page) + 1
     }else{
@@ -37,9 +38,6 @@ function forward(){
 }
 function backward(){
 
-    /* clean URL from unessesary parameters */
-    url.searchParams.delete("goto")
-    
     if(page){
         page = parseInt(page) - 1
         if(page < 0){
@@ -71,6 +69,17 @@ gotoRankInputField.addEventListener("keyup", function(event) {
         var page = Math.trunc((rank - 1)/100)
         url.searchParams.set("page", page)
         url.searchParams.set("goto", rank)
+        window.location.href = url.href
+    }
+});
+
+var getPlayerInputField = document.getElementById("getPlayer");
+getPlayerInputField.addEventListener("keyup", function(event) {
+    if (event.key == "Enter") {
+        event.preventDefault();
+        var string = getPlayerInputField.value
+        url.searchParams.set("string", string)
+        url.searchParams.delete("page")
         window.location.href = url.href
     }
 });

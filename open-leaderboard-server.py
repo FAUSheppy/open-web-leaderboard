@@ -13,6 +13,7 @@ PARAM_END   = "end"
 
 BASE_URL    = "http://{server}{path}?{paramStart}={start}&{paramEnd}={end}"
 MAX_ENTRY   = "http://{server}/getmaxentries"
+FIND_PLAYER = "http://{server}/findplayer?string={pname}"
 SEGMENT     = 100
 SEPERATOR   = ','
 
@@ -72,18 +73,33 @@ def leaderboard():
     '''Show main leaderboard page with range dependant on parameters'''
 
     # parse parameters #
-    start = flask.request.args.get(PARAM_START)
-    page  = flask.request.args.get("page")
+    page        = flask.request.args.get("page")
+    playerName  = flask.request.args.get("string")
 
-    # intentional double if, page is supposed to overwrite start #
-    if start:
-        start = int(start)
+
     if page:
         start = SEGMENT * int(page)
     else:
         start = 0
 
+    # handle find player request #
+    cannotFindPlayer = ""
+    if playerName:
+        playersWithRankUrl = FIND_PLAYER.format(server=SERVER, pname=playerName)
+        playersWithRank    = str(requests.get(playersWithRankUrl).content, "utf-8").split("\n")
+
+        if len(playersWithRank) == 1 and playersWithRank[0] == "":
+            cannotFindPlayer = flask.Markup("<div class=noPlayerFound>No player of that name</div>")
+            start = 0
+        elif len(playersWithRank) == 1:
+            rank = int(playersWithRank[0].split(SEPERATOR)[-1])
+            start = rank - (rank % SEGMENT)
+        else:
+            rank = int(playersWithRank[0].split(SEPERATOR)[-1])
+            start = rank - (rank % SEGMENT)
+
     end = start + SEGMENT
+
 
     # request and check if we are within range #
     maxEntryUrl = MAX_ENTRY.format(server=SERVER)
@@ -119,7 +135,8 @@ def leaderboard():
     finalResponse = flask.render_template("base.html", playerList=players, \
                                                         columNames=columContent, \
                                                         start=start, \
-                                                        endOfBoardIndicator=endOfBoardIndicator)
+                                                        endOfBoardIndicator=endOfBoardIndicator, \
+                                                        findPlayer=cannotFindPlayer)
     return finalResponse
 
 @app.route('/static/<path:path>')
