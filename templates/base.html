@@ -26,14 +26,14 @@
                 <div 
                     {% if searchName == player.name %}
                         style="background: yellow;"
-                    {% endif %}} 
+                    {% endif %}
                     class=line-even>{{ player.getLineHTML(count) }}
                 </div>
                 {% else %}
                 <div 
                     {% if searchName == player.name %}
                         style="background: yellow;"
-                    {% endif %}} 
+                    {% endif %}
                     class=line-odd>{{ player.getLineHTML(count) }}
                 </div>
                 {% endif %}
