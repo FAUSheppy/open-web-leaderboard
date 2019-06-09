@@ -123,7 +123,7 @@ def leaderboard():
     columContent = flask.Markup(flask.render_template("playerLine.html", \
                                         playerRank="Rank", \
                                         playerName="Player", \
-                                        playerRatin="Rating", \
+                                        playerRating="Rating", \
                                         playerGames="Games", \
                                         playerWinratio="Winratio"))
     
