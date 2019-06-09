@@ -21,19 +21,20 @@
         <div class=leaderboard-container>
             <div class=colum-names>{{ columNames  }}</div>                    
             {% for player in playerList %}    
-                {% if loop.index % 2 == 0 %}
+                {% set count = loop.index + start %}
+                {% if count % 2 == 0 %}
                 <div 
                     {% if searchName == player.name %}
                         style="background: yellow;"
                     {% endif %}
-                    class=line-even>{{ player.getLineHTML(loop.index) }}
+                    class=line-even>{{ player.getLineHTML(count) }}
                 </div>
                 {% else %}
                 <div 
                     {% if searchName == player.name %}
                         style="background: yellow;"
                     {% endif %}
-                    class=line-odd>{{ player.getLineHTML(loop.index) }}
+                    class=line-odd>{{ player.getLineHTML(count) }}
                 </div>
                 {% endif %}
             {% endfor %}
