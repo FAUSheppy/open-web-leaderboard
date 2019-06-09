@@ -41,6 +41,12 @@ body{
     margin-right: 10px;
 }
 
+.input-field-number{
+    float: left;
+    margin-right: 10px;
+    width: 100px;
+}
+
 /* #################### LEADERBOARDS ##################### */
 .leaderboard-container{
     width: 80%;
