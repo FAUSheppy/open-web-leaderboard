@@ -58,6 +58,8 @@ class Player:
 def requestRange(start, end):
     '''Request a range from the rating server'''
 
+    start = max(start, 0)
+
     # request information from rating server #
     requestURL = BASE_URL.format(server=SERVER, \
                                     path=LOCATION, \
