@@ -89,12 +89,12 @@ def leaderboard():
     if playerName:
         playersWithRankUrl = FIND_PLAYER.format(server=SERVER, pname=playerName)
         playersWithRank    = str(requests.get(playersWithRankUrl).content, "utf-8").split("\n")
-        searchName, playerID, rating, games, win, rank = playersWithRank[0].split(SEPERATOR)
 
         if len(playersWithRank) == 1 and playersWithRank[0] == "":
             cannotFindPlayer = flask.Markup("<div class=noPlayerFound>No player of that name</div>")
             start = 0
         else:
+            searchName, playerID, rating, games, win, rank = playersWithRank[0].split(SEPERATOR)
             rank = int(rank)
             start = rank - (rank % SEGMENT)
 
