@@ -1,4 +1,4 @@
-/* disable buttons if nessesary */
+/* predefine some variables */
 var url   = new URL(window.location.href)
 var page  = url.searchParams.get("page")
 var buttonBackward = document.getElementById("button-backward")
@@ -6,6 +6,7 @@ var buttonForward  = document.getElementById("button-forward")
 var buttonFirst    = document.getElementById("button-first")
 var isLastPage     = document.getElementById("eof")
 
+/* disable buttons if nessesary */
 if(!page || page == "0"){
     buttonBackward.disabled = true
     buttonFirst.disabled   = true
@@ -20,7 +21,6 @@ if(isLastPage){
 }
 
 function forward(){
-
 
     /* clean URL from unessesary parameters */
     url.searchParams.delete("goto")
