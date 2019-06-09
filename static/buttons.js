@@ -1,17 +1,32 @@
+/* disable buttons if nessesary */
+var url   = new URL(window.location.href)
+var page  = url.searchParams.get("page")
+var buttonBackward = document.getElementById("button-backward")
+var buttonForward  = document.getElementById("button-forward")
+var buttonFirst    = document.getElementById("button-first")
+var isLastPage     = document.getElementById("eof")
+
+if(!page || page == "0"){
+    buttonBackward.disabled = true
+    buttonFirst.disabled   = true
+
+    buttonBackward.classList.add("disabled")
+    buttonFirst.classList.add("disabled")
+}
+
+if(isLastPage){
+    buttonForward.disabled = true;
+    buttonForward.classList.add("disabled")
+}
+
 function forward(){
 
-    var url   = new URL(window.location.href)
-    var start = url.searchParams.get("start")
-    var page  = url.searchParams.get("page")
 
     /* clean URL from unessesary parameters */
     url.searchParams.delete("goto")
-    url.searchParams.delete("start")
-    
+
     if(page){
         page = parseInt(page) + 1
-    }else if(start){
-        page = Math.trunc(parseInt(start)/100) + 1
     }else{
         page = 1
     }
@@ -22,21 +37,14 @@ function forward(){
 }
 function backward(){
 
-    var url   = new URL(window.location.href)
-    var start = url.searchParams.get("start")
-    var page  = url.searchParams.get("page")
-   
     /* clean URL from unessesary parameters */
     url.searchParams.delete("goto")
-    url.searchParams.delete("start")
     
     if(page){
         page = parseInt(page) - 1
         if(page < 0){
             page = 0
         }
-    }else if(start){
-        page = Math.trunc(parseInt(start)/100) - 1
     }else{
         page = 0
     }
@@ -59,7 +67,6 @@ var gotoRankInputField = document.getElementById("gotoRank");
 gotoRankInputField.addEventListener("keyup", function(event) {
     if (event.key == "Enter") {
         event.preventDefault();
-        var url  = new URL(window.location.href)
         var rank = gotoRankInputField.value
         var page = Math.trunc((rank - 1)/100)
         url.searchParams.set("page", page)

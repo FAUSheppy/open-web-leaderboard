@@ -32,6 +32,10 @@ body{
     color: #583535;
 }
 
+.disabled {
+    opacity: 0.5;
+}
+
 .input-field{
     float: left;
     margin-right: 10px;
@@ -61,12 +65,19 @@ body{
     padding-top: 2px;
     padding-bottom: 2px;
 }
+
 .line-odd{
     width: 100%;    
     background-color: lightgrey;
     overflow: hidden;
     padding-top: 2px;
     padding-bottom: 2px;
+}
+
+.endOfBoardIndicator{
+    background: red;
+    text-align: center;
+    font-weight: bold;
 }
 
 /* ############# PLAYER INFORMATION IN LINES ############# */ 
@@ -84,7 +95,6 @@ body{
     float: right;
     width: 20%;
     text-align: right;
-
 }
 
 .playerGames{

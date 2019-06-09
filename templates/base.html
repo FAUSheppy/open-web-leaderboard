@@ -5,9 +5,12 @@
     </head>
     <body>
         <div class=top-bar>
-            <button type="button" onclick=forward()   class=top-button>Forward </button>
-            <button type="button" onclick=backward()  class=top-button>Backward</button>
-            <button type="button" onclick=firstPage() class=top-button>Top 100 </button>
+            <button id="button-backward" type="button" onclick=backward() 
+                    class=top-button>Backward </button>
+            <button id="button-forward" type="button" onclick=forward()
+                    class=top-button>Forward</button>
+            <button id="button-first" type="button" onclick=firstPage()
+                    class=top-button>Top 100 </button>
 
             <input id="getPlayer" type="text"   class=input-field placeholder="search player...">
             <input id="gotoRank"  type="number" class=input-field placeholder="goto rank...">
@@ -23,6 +26,7 @@
                 {% endif %}
                 {% set count = count + 1 %}
             {% endfor %}
+            {{ endOfBoardIndicator }}
         </div>
         <div class=footer>
         	<a class="footerLink" href="https://blog.atlantishq.de/about">Impressum/Legal</a>

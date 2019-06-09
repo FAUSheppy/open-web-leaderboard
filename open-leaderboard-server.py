@@ -12,6 +12,7 @@ PARAM_START = "start"
 PARAM_END   = "end"
 
 BASE_URL    = "http://{server}{path}?{paramStart}={start}&{paramEnd}={end}"
+MAX_ENTRY   = "http://{server}/getmaxentries"
 SEGMENT     = 100
 SEPERATOR   = ','
 
@@ -84,14 +85,17 @@ def leaderboard():
 
     end = start + SEGMENT
 
-
     # request and check if we are within range #
+    maxEntryUrl = MAX_ENTRY.format(server=SERVER)
+    maxEntry = int(requests.get(maxEntryUrl).content)
+    reachedEnd = False
+    if end > maxEntry:
+        start = maxEntry - ( maxEntry % SEGMENT ) - 1
+        end   = maxEntry - 1
+        reachedEnd = True
+
+    # do the actual request #
     responseString = requestRange(start, end)
-    if "MAXENTRY:" in responseString:
-        maxentry = int(responseString.split(":")[1])
-        start = maxentry - SEGMENT - 1
-        end   = maxentry - 1
-        responseString = requestRange(start, end)
 
     # create relevant html-lines from player
     players      = [Player(line) for line in responseString.split("\n")]
@@ -106,11 +110,16 @@ def leaderboard():
                                         playerRatin="Rating", \
                                         playerGames="Games", \
                                         playerWinratio="Winratio"))
-
+    
+    endOfBoardIndicator = ""
+    if reachedEnd:
+        endOfBoardHtml = "<div id='eof' class=endOfBoardIndicator> - - - End of Board - - - </div>"
+        endOfBoardIndicator = flask.Markup(endOfBoardHtml)
     
     finalResponse = flask.render_template("base.html", playerList=players, \
                                                         columNames=columContent, \
-                                                        start=start)
+                                                        start=start, \
+                                                        endOfBoardIndicator=endOfBoardIndicator)
     return finalResponse
 
 @app.route('/static/<path:path>')
