@@ -71,6 +71,7 @@ def requestRange(start, end):
     return str(requests.get(requestURL).content, "utf-8")
 
 @app.route('/leaderboard')
+@app.route('/')
 def leaderboard():
     '''Show main leaderboard page with range dependant on parameters'''
 
