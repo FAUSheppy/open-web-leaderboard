@@ -29,18 +29,12 @@
             {% for player in playerList %}
                 {% set count = loop.index + start %}
                 {% if count % 2 == 0 %}
-                <div 
-                    {% if searchName == player.name %}
-                        style="background: yellow;"
-                    {% endif %}
-                    class=line-even>{{ player.getLineHTML(count) }}
+                <div class="line-even {% if searchName == player.name %}targetPlayer{% endif %}">
+                    {{ player.getLineHTML(count) }}
                 </div>
                 {% else %}
-                <div 
-                    {% if searchName == player.name %}
-                        style="background: yellow;"
-                    {% endif %}
-                    class=line-odd>{{ player.getLineHTML(count) }}
+                <div class="line-odd {% if searchName == player.name %}targetPlayer{% endif %}">
+                    {{ player.getLineHTML(count) }}
                 </div>
                 {% endif %}
             {% endfor %}

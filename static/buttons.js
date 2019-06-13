@@ -1,6 +1,7 @@
 /* predefine some variables */
 var url   = new URL(window.location.href)
 var page  = url.searchParams.get("page")
+var page  = url.searchParams.get("string")
 var buttonBackward = document.getElementById("button-backward")
 var buttonForward  = document.getElementById("button-forward")
 var buttonFirst    = document.getElementById("button-first")
@@ -22,6 +23,13 @@ if(!page || page == "0"){
 if(isLastPage){
     buttonForward.disabled = true;
     buttonForward.classList.add("disabled")
+}
+
+/* if request was a playersearch, move to player */
+targetPlayerElements = document.getElementsByClassName("targetPlayer")
+if(targetPlayerElements.length == 1){
+    scrollOptions = {beahviour: "smooth", block:"center"} 
+    targetPlayerElements[0].scrollIntoView(scrollOptions);
 }
 
 function forward(){

@@ -147,6 +147,11 @@ body{
     padding-bottom: 2px;
 }
 
+.targetPlayer{
+    /* overwrite background for seached player */
+    background: yellow !important;
+}
+
 .endOfBoardIndicator{
     background: red;
     text-align: center;
