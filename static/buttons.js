@@ -1,7 +1,7 @@
 /* predefine some variables */
-var url   = new URL(window.location.href)
-var page  = url.searchParams.get("page")
-var page  = url.searchParams.get("string")
+var url    = new URL(window.location.href)
+var page   = url.searchParams.get("page")
+var player = url.searchParams.get("string")
 var buttonBackward = document.getElementById("button-backward")
 var buttonForward  = document.getElementById("button-forward")
 var buttonFirst    = document.getElementById("button-first")
@@ -28,9 +28,16 @@ if(isLastPage){
 /* if request was a playersearch, move to player */
 targetPlayerElements = document.getElementsByClassName("targetPlayer")
 if(targetPlayerElements.length == 1){
+    /* scrollIntoView broken on android?? wtf */
     scrollOptions = {beahviour: "smooth", block:"center"} 
     targetPlayerElements[0].scrollIntoView(scrollOptions);
 }
+
+/* alert on mobile devices if player was not found */
+if(player && targetPlayerElements.length != 1){
+    alert("Player " + player + " not found :/")
+}
+
 
 function forward(){
 

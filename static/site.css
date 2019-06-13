@@ -79,6 +79,10 @@ body{
     .input-field-number{
         display: none;
     }
+
+    .noPlayerFound{
+        display: none;
+    }
 }
 /* ############# PLAYER INFORMATION IN LINES ############# */ 
 
