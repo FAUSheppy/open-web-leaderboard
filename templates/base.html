@@ -25,8 +25,8 @@
             {{ findPlayer }}
         </div>
         <div class=leaderboard-container>
-            <div class=colum-names>{{ columNames  }}</div>                    
-            {% for player in playerList %}    
+            <div class=colum-names>{{ columNames }}</div>
+            {% for player in playerList %}
                 {% set count = loop.index + start %}
                 {% if count % 2 == 0 %}
                 <div 
