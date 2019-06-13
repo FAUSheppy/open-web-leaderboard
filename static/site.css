@@ -55,15 +55,73 @@ body{
     font-weight: bold;
 }
 
+@media(max-width: 800px){
+    .top-bar{
+        /* bar will be scrolled aways */
+        position: absolute;
+        min-width: 250px;
+        padding-bottom: 4vw;
+        padding-top: 2vw;
+        padding-left: 4vw;
+    }
+    .top-button{
+        font-size: 5vw;
+        margin-right: 2.5%;
+    }
+    
+    .input-field{
+        margin-top: 2vw;
+        float: left;
+        font-size: 6vw;
+        margin-right: 10px;
+    }
+    
+    .input-field-number{
+        display: none;
+    }
+}
+/* ############# PLAYER INFORMATION IN LINES ############# */ 
+
+.playerRank{
+    margin-left:1%;
+    float: left;
+    width: 10%;
+}
+
+.playerName{
+    float: left;
+    width: 25%;
+}
+
+.playerRating{
+    float: right;
+    width: 15%;
+    text-align: right;
+}
+
+.playerGames{
+    float: right;
+    text-align: right;
+    margin-right: 1%;
+    width: 20%;
+}
+
+.playerWinratio{
+    float: right;
+    width: 20%;
+    text-align: center;
+}
+
 /* #################### LEADERBOARDS ##################### */
 .leaderboard-container{
-    width: 80%;
-    max-width: 800px;
     margin-top: 60px;
     margin-bottom: 50px;
     margin-left: auto;
     margin-right: auto;
     background-color: green;
+    min-width: 250px;
+    width: 80%;
+    max-width: 800px;
 }
 
 .colum-names{
@@ -95,35 +153,52 @@ body{
     font-weight: bold;
 }
 
-/* ############# PLAYER INFORMATION IN LINES ############# */ 
-.playerRank{
-    margin-left:1%;
-    float: left;
-    width: 10%;
-}
+@media(max-width: 800px){
+    .leaderboard-container{
+        font-size: 4.5vw;
+        width: 100%;
+        
+        /* deal with absolute nav-header */
+        margin-top: 30vw;
 
-.playerName{
-    float: left;
-    width: 25%;
-}
+    }
+    
+    .colum-names{
+        white-space: nowrap;
+        overflow: hidden;
+    }
 
-.playerRating{
-    float: right;
-    width: 15%;
-    text-align: right;
-}
+    .playerName{
+        overflow: hidden;
+        white-space: nowrap;
+        width: 30%;
+        /* write over games */
+        z-index: 2;
+    }
 
-.playerGames{
-    float: right;
-    width: 20%;
-    text-align: right;
-    margin-right: 1%;
-}
+    .playerName:hover{
+        overflow: visible;
+        white-space: normal;
+    }
 
-.playerWinratio{
-    float: right;
-    width: 20%;
-    text-align: center;
+    .playerRating{
+        text-align: left;
+    }
+
+    .playerRank{
+        width: unset;
+        margin-right: 20px;
+    }
+
+    .playerGames{
+        width: 15%;
+        text-align: left;
+    }
+    
+    .playerWinratio{
+        /* 19% is just enought to cut the last letter */
+        width: 19%;
+    }
 }
 
 /* ######################## FOOTER ####################### */ 
@@ -150,4 +225,20 @@ body{
 .mid{
     margin-right: 25%;
     margin-left: 25%;
+}
+
+
+@media(max-width: 800px){
+    .footer{
+        height: unset;
+    }
+
+    .footerLink{
+        font-size: 4vw;
+    }
+    
+    .mid{
+        margin-left: 2.5%;
+        margin-right: 2.5%;
+    }
 }
