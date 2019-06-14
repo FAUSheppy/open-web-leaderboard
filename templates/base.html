@@ -20,11 +20,9 @@
                     class=top-button>Top 100 </button>
 
             <input id="getPlayer" type="text"   class=input-field
-                    placeholder="search player...">
-            <label for="getPlayer">Search for a player.</label>
+                    aria-label="search for player" placeholder="search player...">
             <input id="gotoRank"  type="number" class=input-field-number
-                     placeholder="goto rank...">
-            <label for="gotoRank">Jump to a given rank.</label>
+                    aria-label="goto rank" placeholder="goto rank...">
             {{ findPlayer }}
         </div>
         <div class=leaderboard-container role="main">
