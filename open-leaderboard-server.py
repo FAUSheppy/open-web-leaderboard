@@ -75,7 +75,7 @@ def requestRange(start, end):
 
 @app.route('/leaderboard')
 @app.route('/')
-@cache.cached(timeout=600)
+@cache.cached(timeout=600, query_string=True)
 def leaderboard():
     '''Show main leaderboard page with range dependant on parameters'''
 
