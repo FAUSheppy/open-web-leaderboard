@@ -24,7 +24,7 @@ body{
 .top-button{
     float: left;
     margin-right: 10px;
-    background-color: red;
+    background-color: #FF6B6B;
     font-weight: bold;
     color: #583535;
 }
@@ -118,7 +118,6 @@ body{
     margin-bottom: 50px;
     margin-left: auto;
     margin-right: auto;
-    background-color: green;
     min-width: 250px;
     width: 80%;
     max-width: 800px;
@@ -127,13 +126,13 @@ body{
 .colum-names{
     width: 100%;
     font-weight: bold;
-    background-color: green;
+    background-color: #00B800;
     font-weight: bold;
 }
 
 .line-even{
     width: 100%;
-    background-color: grey;
+    background-color: #999999; /* 60% grey */
     overflow: hidden;
     padding-top: 2px;
     padding-bottom: 2px;
@@ -153,7 +152,7 @@ body{
 }
 
 .endOfBoardIndicator{
-    background: red;
+    background: #FF6B6B;
     text-align: center;
     font-weight: bold;
 }

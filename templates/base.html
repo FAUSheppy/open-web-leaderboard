@@ -1,16 +1,17 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <title>Leaderboard</title>
+        <meta name="Description" content="Open Web Leaderboard">
         <link rel="stylesheet" type="text/css" href="/static/site.css">
         <link rel="shortcut icon" href="/static/defaultFavicon.ico">
         <script src="static/buttons.js" defer></script>
 
         <!-- needed for @media-css mofiers -->
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-
     </head>
     <body>
-        <div class=top-bar>
+        <div class=top-bar role="navigation">
             <button id="button-backward" type="button" onclick=backward() 
                     class=top-button>Backward </button>
             <button id="button-forward" type="button" onclick=forward()
@@ -20,11 +21,13 @@
 
             <input id="getPlayer" type="text"   class=input-field
                     placeholder="search player...">
+            <label for="getPlayer">Search for a player.</label>
             <input id="gotoRank"  type="number" class=input-field-number
                      placeholder="goto rank...">
+            <label for="gotoRank">Jump to a given rank.</label>
             {{ findPlayer }}
         </div>
-        <div class=leaderboard-container>
+        <div class=leaderboard-container role="main">
             <div class=colum-names>{{ columNames }}</div>
             {% for player in playerList %}
                 {% set count = loop.index + start %}
@@ -40,7 +43,7 @@
             {% endfor %}
             {{ endOfBoardIndicator }}
         </div>
-        <div class=footer>
+        <div class=footer role="contentinfo">
         	<a class="footerLink" href="https://blog.atlantishq.de/about">Impressum/Legal</a>
         	<a class="footerLink mid" href="https://blog.atlantishq.de/post/insurgency-rating-1/">
                     How does it work?</a>
