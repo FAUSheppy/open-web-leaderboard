@@ -2,9 +2,12 @@
 import flask
 import requests
 import argparse
+import flask_caching as fcache
 
 
 app = flask.Flask("open-leaderboard")
+cache = fcache.Cache(app, config={'CACHE_TYPE': 'simple'})
+cache.init_app(app)
 
 SERVER      = "localhost:5000"
 LOCATION    = "/rankrange"
@@ -72,6 +75,7 @@ def requestRange(start, end):
 
 @app.route('/leaderboard')
 @app.route('/')
+@cache.cached(timeout=600)
 def leaderboard():
     '''Show main leaderboard page with range dependant on parameters'''
 
