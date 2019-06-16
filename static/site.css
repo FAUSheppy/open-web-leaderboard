@@ -127,6 +127,7 @@ body{
     width: 100%;
     font-weight: bold;
     background-color: #00B800;
+    overflow: hidden;
     font-weight: bold;
 }
 
