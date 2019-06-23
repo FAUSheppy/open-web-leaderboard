@@ -11,4 +11,4 @@ The system was developed to be used with the [skillbird-framwork](https://github
 ![open-web-leaderboard](https://media.atlantishq.de/leaderboard-github-picture.png)
 
 # Live Demo
-[rating.atlantishq.de](https://rating.atlantishq.de)
+[insurgency.atlantishq.de](https://insurgency.atlantishq.de)
