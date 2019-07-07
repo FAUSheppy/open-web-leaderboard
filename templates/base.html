@@ -29,9 +29,6 @@
             <div class=colum-names>{{ columNames }}</div>
             {% for player in playerList %}
                 {% set count = loop.index + start %}
-                {% if count == 0 %}
-                    {% set count = 1 %}
-                {% endif %}
                 {% if count % 2 == 0 %}
                 <div class="line-even {% if searchName == player.name %}targetPlayer{% endif %}">
                     {{ player.getLineHTML(count) }}
