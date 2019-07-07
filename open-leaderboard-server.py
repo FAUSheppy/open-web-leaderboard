@@ -139,6 +139,10 @@ def leaderboard():
         endOfBoardHtml = "<div id='eof' class=endOfBoardIndicator> - - - End of Board - - - </div>"
         endOfBoardIndicator = flask.Markup(endOfBoardHtml)
     
+    # fix <100 player start at 0 #
+    if maxEntry <= 100:
+        start = max(start, 1)
+
     finalResponse = flask.render_template("base.html", playerList=players, \
                                                         columNames=columContent, \
                                                         start=start, \
