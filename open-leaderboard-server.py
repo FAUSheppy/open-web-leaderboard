@@ -29,6 +29,7 @@ class Player:
             name, playerID, rating, games, wins = line.split(SEPERATOR)
         except ValueError as e:
             print("Failed to parse line: {}".format(line))
+            raise e
        
         # set relevant values #
         self.name       = name
