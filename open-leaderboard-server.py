@@ -141,7 +141,7 @@ def leaderboard():
     
     # fix <100 player start at 0 #
     if maxEntry <= 100:
-        start = max(start, 1)
+        start = max(start, 0)
 
     finalResponse = flask.render_template("base.html", playerList=players, \
                                                         columNames=columContent, \
