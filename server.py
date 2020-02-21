@@ -155,6 +155,9 @@ def leaderboard():
 def send_js(path):
     return send_from_directory('static', path)
 
+@app.before_first_request
+def init():
+    pass
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Start open-leaderboard', \
