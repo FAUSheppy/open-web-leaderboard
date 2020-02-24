@@ -9,7 +9,7 @@ app = flask.Flask("open-leaderboard")
 cache = fcache.Cache(app, config={'CACHE_TYPE': 'simple'})
 cache.init_app(app)
 
-SERVER      = "localhost:5000"
+SERVER      = "localhost:5001"
 LOCATION    = "/rankrange"
 PARAM_START = "start"
 PARAM_END   = "end"
