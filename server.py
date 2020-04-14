@@ -103,7 +103,7 @@ def leaderboard():
             start = 0
         else:
             searchName = playersWithRank.split(",")[1].strip(" '")
-            rank = int(playersWithRank.split(",")[4].strip(" ')"))
+            rank = int(playersWithRank.split(",")[4].strip(" ')]["))
             start = rank - (rank % SEGMENT)
 
     end = start + SEGMENT
