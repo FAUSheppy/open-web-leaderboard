@@ -3,6 +3,7 @@ import flask
 import requests
 import argparse
 import flask_caching as fcache
+import json
 
 
 app = flask.Flask("open-leaderboard")
@@ -16,7 +17,7 @@ PARAM_END   = "end"
 
 BASE_URL    = "http://{server}{path}?{paramStart}={start}&{paramEnd}={end}"
 MAX_ENTRY   = "http://{server}/getmaxentries"
-FIND_PLAYER = "http://{server}/findplayer?string={pname}"
+FIND_PLAYER = "http://{server}/getplayer?name={pname}"
 SEGMENT     = 100
 SEPERATOR   = ','
 
@@ -95,14 +96,14 @@ def leaderboard():
 
     if playerName:
         playersWithRankUrl = FIND_PLAYER.format(server=SERVER, pname=playerName)
-        playersWithRank    = str(requests.get(playersWithRankUrl).content, "utf-8").split("|")
-
-        if len(playersWithRank) == 1 and playersWithRank[0] == "":
+        playersWithRank    = str(requests.get(playersWithRankUrl).content, "utf-8")
+        print(playersWithRank)
+        if playersWithRank == "[]":
             cannotFindPlayer = flask.Markup("<div class=noPlayerFound>No player of that name</div>")
             start = 0
         else:
-            searchName, playerID, rating, games, win, rank = playersWithRank[0].split(SEPERATOR)
-            rank = int(rank)
+            searchName = playersWithRank.split(",")[1].strip(" '")
+            rank = int(playersWithRank.split(",")[4].strip(" ')"))
             start = rank - (rank % SEGMENT)
 
     end = start + SEGMENT
