@@ -5,9 +5,14 @@ import argparse
 import flask_caching as fcache
 import json
 import database as db
+import os
 
 
 app = flask.Flask("open-leaderboard")
+
+if os.path.isfile("config.py"):
+    app.config.from_object("config")
+
 cache = fcache.Cache(app, config={'CACHE_TYPE': 'simple'})
 cache.init_app(app)
 
