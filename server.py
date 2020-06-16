@@ -4,33 +4,20 @@ import requests
 import argparse
 import flask_caching as fcache
 import json
+import database as db
 
 
 app = flask.Flask("open-leaderboard")
 cache = fcache.Cache(app, config={'CACHE_TYPE': 'simple'})
 cache.init_app(app)
 
-SERVER      = "localhost:5001"
-LOCATION    = "/rankrange"
-PARAM_START = "start"
-PARAM_END   = "end"
+SEGMENT=100
 
-BASE_URL    = "http://{server}{path}?{paramStart}={start}&{paramEnd}={end}"
-MAX_ENTRY   = "http://{server}/getmaxentries"
-FIND_PLAYER = "http://{server}/getplayer?name={pname}"
-SEGMENT     = 100
-SEPERATOR   = ','
-
-class Player:
-    def __init__(self, line):
+class PlayerInLeaderboard:
+    def __init__(self, dbRow):
         '''Initialize a player object later to be serialized to HTML'''
 
-        # parse input line #
-        try:
-            name, playerID, rating, games, wins = line.split(SEPERATOR)
-        except ValueError as e:
-            print("Failed to parse line: {}".format(line))
-            raise e
+        name, playerID, rating, games, wins = dbRow
        
         # set relevant values #
         self.name       = name
@@ -58,21 +45,6 @@ class Player:
 
         # mark returned string as preformated html #
         return flask.Markup(string)
-        
-def requestRange(start, end):
-    '''Request a range from the rating server'''
-
-    start = max(start, 0)
-
-    # request information from rating server #
-    requestURL = BASE_URL.format(server=SERVER, \
-                                    path=LOCATION, \
-                                    paramStart=PARAM_START, \
-                                    paramEnd=PARAM_END, \
-                                    start=start, \
-                                    end=end)
-
-    return str(requests.get(requestURL).content, "utf-8")
 
 @app.route('/leaderboard')
 @app.route('/')
@@ -109,24 +81,15 @@ def leaderboard():
     end = start + SEGMENT
 
 
-    # request and check if we are within range #
-    maxEntryUrl = MAX_ENTRY.format(server=SERVER)
-    maxEntry = int(requests.get(maxEntryUrl).content)
+    # compute range #
+    maxEntry = db.getTotalPlayers(app.config["DB_PATH"])
     reachedEnd = False
     if end > maxEntry:
         start = maxEntry - ( maxEntry % SEGMENT ) - 1
         end   = maxEntry - 1
         reachedEnd = True
 
-    # do the actual request #
-    responseString = requestRange(start, end)
-
-    # create relevant html-lines from player
-    players      = [Player(line) for line in responseString.split("\n")]
-
-    # sanity check reponse #
-    if len(players) > 100:
-        raise ValueError("Bad reponse from rating server")
+    playerList = db.getRankRange(app.config["DB_PATH"], start, end)
 
     columContent = flask.Markup(flask.render_template("playerLine.html", \
                                         playerRank="Rank", \
@@ -143,8 +106,9 @@ def leaderboard():
     # fix <100 player start at 0 #
     if maxEntry <= 100:
         start = max(start, 0)
-
-    finalResponse = flask.render_template("base.html", playerList=players, \
+    
+    print(playerList)
+    finalResponse = flask.render_template("base.html", playerList=playerList, \
                                                         columNames=columContent, \
                                                         start=start, \
                                                         endOfBoardIndicator=endOfBoardIndicator, \
@@ -163,23 +127,14 @@ def init():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Start open-leaderboard', \
                                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--rating-server', default=SERVER, \
-            help='Compatible rating server to query')
-    parser.add_argument('--request-url', default=LOCATION, \
-            help='API location for rating range')
-    parser.add_argument('--param-start', default=PARAM_START, \
-            help='Name of parameter annotating the start of the rating range')
-    parser.add_argument('--param-end', default=PARAM_END, \
-            help='Name of parameter annotating the end of the rating range')
     parser.add_argument('--interface', default="localhost", \
             help='Interface on which flask (this server) will take requests on')
     parser.add_argument('--port', default="5002", \
             help='Port on which flask (this server) will take requests on')
+
+    parser.add_argument('--skillbird-db', required=True, help='skillbird database (overrides web connection if set)')
+   
+    
     args = parser.parse_args()
-
-    SERVER      = args.rating_server
-    LOCATION    = args.request_url
-    PARAM_START = args.param_start
-    PARAM_END   = args.param_end
-
+    app.config["DB_PATH"] = args.skillbird_db
     app.run(host=args.interface, port=args.port)
