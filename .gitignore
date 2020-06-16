@@ -1,4 +1,5 @@
 *.swp
+config.py
 *.txt
 *.ncsv
 *.out
