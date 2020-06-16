@@ -112,7 +112,6 @@ def leaderboard():
     if maxEntry <= 100:
         start = max(start, 0)
     
-    print(playerList)
     finalResponse = flask.render_template("base.html", playerList=playerList, \
                                                         columNames=columContent, \
                                                         start=start, \
