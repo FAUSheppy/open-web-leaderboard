@@ -18,39 +18,6 @@ cache.init_app(app)
 
 SEGMENT=100
 
-class PlayerInLeaderboard:
-    def __init__(self, dbRow):
-        '''Initialize a player object later to be serialized to HTML'''
-
-        name, playerID, rating, games, wins = dbRow
-       
-        # set relevant values #
-        self.name       = name
-        self.playerID   = playerID
-        self.rating     = int(float(rating))
-        self.games      = int(games)
-        self.wins       = int(wins)
-        self.loses      = self.games - self.wins
-
-        # determine winratio #
-        if self.games == 0:
-            self.winratio = "N/A"
-        else:
-            self.winratio = str(int(self.wins/self.games * 100))
-
-    def getLineHTML(self, rank):
-        '''Build a single line for a specific player in the leaderboard'''
-
-        string = flask.render_template("playerLine.html", \
-                                        playerRank = rank, \
-                                        playerName = self.name, \
-                                        playerRating = self.rating, \
-                                        playerGames = self.games, \
-                                        playerWinratio = self.winratio)
-
-        # mark returned string as preformated html #
-        return flask.Markup(string)
-
 @app.route('/leaderboard')
 @app.route('/')
 @cache.cached(timeout=600, query_string=True)
@@ -72,15 +39,12 @@ def leaderboard():
     searchName = ""
 
     if playerName:
-        playersWithRankUrl = FIND_PLAYER.format(server=SERVER, pname=playerName)
-        playersWithRank    = str(requests.get(playersWithRankUrl).content, "utf-8")
-        print(playersWithRank)
-        if playersWithRank == "[]":
+        playerInLeaderboard, rank = db.findPlayerByName(app.config["DB_PATH"], playerName)
+        if not playerInLeaderboard:
             cannotFindPlayer = flask.Markup("<div class=noPlayerFound>No player of that name</div>")
             start = 0
         else:
-            searchName = playersWithRank.split(",")[1].strip(" '")
-            rank = int(playersWithRank.split(",")[4].strip(" ')]["))
+            searchName = playerInLeaderboard.name
             start = rank - (rank % SEGMENT)
 
     end = start + SEGMENT
@@ -112,7 +76,6 @@ def leaderboard():
     if maxEntry <= 100:
         start = max(start, 0)
     
-    print(playerList)
     finalResponse = flask.render_template("base.html", playerList=playerList, \
                                                         columNames=columContent, \
                                                         start=start, \

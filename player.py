@@ -5,11 +5,11 @@ class PlayerInLeaderboard:
     def __init__(self, dbRow):
         '''Initialize a player object later to be serialized to HTML'''
 
-        playerID, name, lastGame, wins, mu, sigma, games = dbRow
+        playerId, name, lastGame, wins, mu, sigma, games = dbRow
        
         # set relevant values #
         self.name       = name
-        self.playerID   = playerID
+        self.playerId   = playerId
         self.mu         = mu
         self.sigma      = sigma
         self.rating     = int(self.mu) - int(self.sigma)
