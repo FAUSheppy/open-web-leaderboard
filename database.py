@@ -50,8 +50,8 @@ def findPlayerByName(database, playerName):
 
     playerInLeaderboard = player.PlayerInLeaderboard(playerRow)
     # compte rank
-    cursor.execute("SELECT COUNT(*) from players where mu < ( SELECT mu from players where playerId == ? );", 
-                        (playerInLeaderboard.playerId,))
+    cursor.execute("SELECT COUNT(*) from players where (mu-2*sigma) > (?-2*?);",
+                        (playerInLeaderboard.mu, playerInLeaderboard.sigma))
     rank = cursor.fetchone()[0]
     conn.close()
     return (playerInLeaderboard, rank)
