@@ -34,9 +34,9 @@ if(targetPlayerElements.length == 1){
 }
 
 /* alert on mobile devices if player was not found */
-if(player && targetPlayerElements.length != 1){
-    alert("Player " + player + " not found :/")
-}
+//if(player && targetPlayerElements.length != 1){
+//    alert("Player " + player + " not found :/")
+//}
 
 
 function forward(){
