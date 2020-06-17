@@ -8,7 +8,6 @@ DB_BASE = "file:{}?mode=ro"
 def getTotalPlayers(database):
     '''Get the total number of players in the database'''
 
-    print(DB_BASE.format(database))
     conn = sqlite3.connect(DB_BASE.format(database), uri=True)
     cursor = conn.cursor()
     cursor.execute("SELECT Count(*) FROM players")
@@ -32,22 +31,27 @@ def getRankRange(database, start, end):
 
     return playerList
 
-def findPlayerByName(playerName):
+def findPlayerByName(database, playerName):
     '''Find a player by his name (prefer fullmatch)'''
 
     conn = sqlite3.connect(DB_BASE.format(database), uri=True)
     cursor = conn.cursor()
     playerNamePrepared = "%{}%".format(playerName.replace("%", "%%"))
     cursor.execute("SELECT * FROM players WHERE name == ?", (playerName,))
-    row = cursor.fetone()
+    row = cursor.fetchone()
 
     playerRow = None
     if row:
         cursor.execute("SELECT * FROM players WHERE name LIKE ?", (playerNamePrepared,))
-        row = cursor.fetchone()[0]
-        if not row:
+        playerRow = cursor.fetchone()
+        if not playerRow:
             conn.close()
-            return None
+            return (None, None)
 
+    playerInLeaderboard = player.PlayerInLeaderboard(playerRow)
+    # compte rank
+    cursor.execute("SELECT COUNT(*) from players where mu < ( SELECT mu from players where playerId == ? );", 
+                        (playerInLeaderboard.playerId,))
+    rank = cursor.fetchone()[0]
     conn.close()
-    return players.Leaderboard(playerRow)
+    return (playerInLeaderboard, rank)
