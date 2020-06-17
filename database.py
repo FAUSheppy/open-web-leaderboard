@@ -41,7 +41,7 @@ def findPlayerByName(database, playerName):
     row = cursor.fetchone()
 
     playerRow = None
-    if row:
+    if not playerRow:
         cursor.execute("SELECT * FROM players WHERE name LIKE ?", (playerNamePrepared,))
         playerRow = cursor.fetchone()
         if not playerRow:
