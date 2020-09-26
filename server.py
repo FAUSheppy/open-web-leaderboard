@@ -4,8 +4,9 @@ import requests
 import argparse
 import flask_caching as fcache
 import json
-import database as db
 import os
+
+from database import DatabaseConnection
 
 
 app = flask.Flask("open-leaderboard")
@@ -18,6 +19,27 @@ cache.init_app(app)
 
 SEGMENT=100
 
+@app.route('/playerdata')
+def playerInfo():
+    '''API-Endpoint for Canvas Query'''
+
+    playerId = flask.request.args.get("id")
+
+    db = DatabaseConnection(app.config["DB_PATH"])
+    data = db.getHistoricalForPlayerId(playerId)
+
+    return json.dumps(data)
+
+@app.route("/player")
+def player():
+    '''Show Info about Player'''
+
+    db = DatabaseConnection(app.config["DB_PATH"])
+    player = db.getPlayerById(playerId)
+    player.rank = db.getPlayerRank(player)
+
+    return flask.render_template("player.html", player=player)
+
 @app.route('/leaderboard')
 @app.route('/')
 @cache.cached(timeout=600, query_string=True)
@@ -27,7 +49,7 @@ def leaderboard():
     # parse parameters #
     page        = flask.request.args.get("page")
     playerName  = flask.request.args.get("string")
-
+    db = DatabaseConnection(app.config["DB_PATH"])
 
     if page:
         start = SEGMENT * int(page)
@@ -39,7 +61,7 @@ def leaderboard():
     searchName = ""
 
     if playerName:
-        playerInLeaderboard, rank = db.findPlayerByName(app.config["DB_PATH"], playerName)
+        playerInLeaderboard, rank = db.findPlayerByName(playerName)
         if not playerInLeaderboard:
             cannotFindPlayer = flask.Markup("<div class=noPlayerFound>No player of that name</div>")
             start = 0
@@ -51,14 +73,14 @@ def leaderboard():
 
 
     # compute range #
-    maxEntry = db.getTotalPlayers(app.config["DB_PATH"])
+    maxEntry = db.getTotalPlayers()
     reachedEnd = False
     if end > maxEntry:
         start = maxEntry - ( maxEntry % SEGMENT ) - 1
         end   = maxEntry - 1
         reachedEnd = True
 
-    playerList = db.getRankRange(app.config["DB_PATH"], start, end)
+    playerList = db.getRankRange(start, end)
 
     columContent = flask.Markup(flask.render_template("playerLine.html", \
                                         playerRank="Rank", \
