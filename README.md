@@ -7,6 +7,11 @@ The Open Web Leaderboard is a leaderboard that can easily be used with any backe
 
 The system was developed to be used with the [skillbird-framwork](https://github.com/FAUSheppy/skillbird). If you use this framework, the program should be working without any arguments. If you need more conductibility feel free to open a pull-request or send me a message.
 
+# Requirements
+- [MDB Jquery](https://mdbootstrap.com/docs/jquery/getting-started/download/) (unpack to ./static/bootstrap/)
+- ``python3 -m pip install -r req.txt``
+
+
 # How to run
 You can run the leaderboard as a flask standalone (arguments overwrite *config.py* settings!):
 
