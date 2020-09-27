@@ -52,7 +52,10 @@ class DatabaseConnection:
             timestampDict.update({ "sigma" : r[SIGMA]})
             playerIdDict.update({ r[TIMESTAMP] : timestampDict })
 
-        retDict = { rows[0][PLAYER_ID] : playerIdDict }
+        try:
+            retDict = { rows[0][PLAYER_ID] : playerIdDict }
+        except IndexError:
+            retDict = None
         return retDict
 
     def getPlayerById(self, playerId):
