@@ -2,6 +2,7 @@
 import flask
 import requests
 import argparse
+import datetime
 import flask_caching as fcache
 import json
 import os
@@ -19,26 +20,58 @@ cache.init_app(app)
 
 SEGMENT=100
 
-@app.route('/playerdata')
-def playerInfo():
-    '''API-Endpoint for Canvas Query'''
 
-    playerId = flask.request.args.get("id")
 
-    db = DatabaseConnection(app.config["DB_PATH"])
-    data = db.getHistoricalForPlayerId(playerId)
-
-    return json.dumps(data)
+def prettifyMinMaxY(computedMin, computedMax):
+    if computedMax > 0 and computedMin > 0:
+        return (0, 4000)
+    else:
+        return (computedMin - 100, 4000)
 
 @app.route("/player")
 def player():
     '''Show Info about Player'''
 
+    playerId = flask.request.args.get("id")
+    if(not playerId):
+        return ("", 404)
+
     db = DatabaseConnection(app.config["DB_PATH"])
     player = db.getPlayerById(playerId)
-    player.rank = db.getPlayerRank(player)
 
-    return flask.render_template("player.html", player=player)
+    if(not player):
+        return ("", 404)
+
+    player.rank = db.getPlayerRank(player)
+    histData = db.getHistoricalForPlayerId(playerId)
+
+    csv_month_year = []
+    csv_ratings = []
+
+    minRating = 3000
+    maxRating = 0
+
+    if histData:
+        datapoints = histData[playerId]
+        if datapoints:
+            for dpk in datapoints.keys():
+                
+                ratingString = str(int(datapoints[dpk]["mu"]) - 2*int(datapoints[dpk]["sigma"]))
+                ratingAmored = '"' + ratingString + '"'
+                csv_ratings += [ratingAmored]
+                t = datetime.datetime.fromtimestamp(int(float(dpk)))
+                tString = t.strftime("%m %Y")
+                tStringAmored = '"' + tString + '"'
+                csv_month_year += [tStringAmored]
+
+                minRating = min(minRating, int(ratingString))
+                maxRating = max(maxRating, int(ratingString))
+
+    yMin, yMax = prettifyMinMaxY(minRating, maxRating)
+
+    return flask.render_template("player.html", player=player, CSV_RATINGS=",".join(csv_ratings), 
+                                    CSV_MONTH_YEAR_OF_RATINGS=",".join(csv_month_year),
+                                    Y_MIN=yMin, Y_MAX=yMax)
 
 @app.route('/leaderboard')
 @app.route('/')

@@ -10,3 +10,4 @@ __pychache__/
 *.pyc
 build/
 configparse_wrapper/
+static/bootstrap/

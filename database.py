@@ -59,15 +59,15 @@ class DatabaseConnection:
         '''Get a player by his id'''
 
         cursor = self.connPlayers.cursor()
-        cursor.execute("SELECT * FROM players where playerId = ?", (playerId,))
+        cursor.execute("SELECT * FROM players where id = ?", (playerId,))
         row = cursor.fetchone()
 
         if(row):
-            playerInLeaderboard = player.PlayerInLeaderboard(playerRow)
+            playerInLeaderboard = player.PlayerInLeaderboard(row)
         else:
             playerInLeaderboard = None
 
-        return row
+        return playerInLeaderboard
 
     def getRankRange(self, start, end):
         '''Get a range of players by rank'''
@@ -106,8 +106,8 @@ class DatabaseConnection:
         '''Calculate player rank - a player rank may change rapidly and 
             can't and shouldn't be used to identify a player'''
     
-        cursor = connPlayers.cursor()
+        cursor = self.connPlayers.cursor()
         cursor.execute("SELECT COUNT(*) from players where (mu-2*sigma) > (?-2*?);",
-                            (playerInLeaderboard.mu, playerInLeaderboard.sigma))
+                            (player.mu, player.sigma))
         rank = cursor.fetchone()[0]
         return rank
