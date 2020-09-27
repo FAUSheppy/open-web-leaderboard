@@ -9,6 +9,7 @@ The system was developed to be used with the [skillbird-framwork](https://github
 
 # Requirements
 - [MDB Jquery](https://mdbootstrap.com/docs/jquery/getting-started/download/) (unpack to ./static/bootstrap/)
+- [Fontawesome](https://fontawesome.com/download) (move to static/boostrap/fontawesome.css)
 - ``python3 -m pip install -r req.txt``
 
 

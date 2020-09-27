@@ -3,49 +3,45 @@
     <head>
         <title>Leaderboard</title>
         <meta name="Description" content="Open Web Leaderboard">
-        <link rel="stylesheet" type="text/css" href="/static/site.css">
         <link rel="shortcut icon" href="/static/defaultFavicon.ico">
         <script src="static/buttons.js" defer></script>
 
         <!-- needed for @media-css mofiers -->
         <meta content="width=device-width, initial-scale=1" name="viewport" />
+
+        <link rel="stylesheet" href="/static/bootstrap/fontawesome.css">
+        <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/bootstrap/css/mdb.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/static/site.css">
+
+        <script src="/static/bootstrap/js/jquery.js"></script>
+        <script src="/static/bootstrap/js/popper.js"></script>
+        <script src="/static/bootstrap/js/bootstrap.js"></script>
+        <script src="/static/bootstrap/js/mdb.min.js"></script>
+
     </head>
     <body>
-        <div class=top-bar role="navigation">
-            <button id="button-backward" type="button" onclick=backward() 
-                    class=top-button>Backward </button>
-            <button id="button-forward" type="button" onclick=forward()
-                    class=top-button>Forward</button>
-            <button id="button-first" type="button" onclick=firstPage()
-                    class=top-button>Top 100 </button>
-
-            <input id="getPlayer" type="text"   class=input-field
-                    aria-label="search for player" placeholder="search player...">
-            <input id="gotoRank"  type="number" class=input-field-number
-                    aria-label="goto rank" placeholder="goto rank...">
-            {{ findPlayer }}
-        </div>
-        <div class=leaderboard-container role="main">
+        {% include 'navbar_leaderboard.html' %}
+        <div class="container mt-3 mb-3" role="main">
             <div class=colum-names>{{ columNames }}</div>
             {% for player in playerList %}
                 {% set count = loop.index + start %}
                 {% if count % 2 == 0 %}
                 <div class="line-even {% if searchName == player.name %}targetPlayer{% endif %}">
+                    <a href="/player?id={{ player.playerId }}">
                     {{ player.getLineHTML(count) }}
+                    </a>
                 </div>
                 {% else %}
                 <div class="line-odd {% if searchName == player.name %}targetPlayer{% endif %}">
+                    <a href="/player?id={{ player.playerId }}">
                     {{ player.getLineHTML(count) }}
+                    </a>
                 </div>
                 {% endif %}
             {% endfor %}
             {{ endOfBoardIndicator }}
         </div>
-        <div class=footer role="contentinfo">
-        	<a class="footerLink" href="https://blog.atlantishq.de/about">Impressum/Legal</a>
-        	<a class="footerLink mid" href="https://blog.atlantishq.de/post/insurgency-rating-1/">
-                    How does it work?</a>
-        	<a class="footerLink" href="https://github.com/FAUSheppy/skillbird">Star on GitHub</a>
-        </div> 
+    {% include 'footer.html' %}
     </body>
 </html>

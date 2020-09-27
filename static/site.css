@@ -1,6 +1,6 @@
 /* general */
 body{
-    background: #323232;
+    background: #323232 !important;
 }
 
 /* ############### TOP NAVBAR ############# */
@@ -80,23 +80,30 @@ body{
         display: none;
     }
 }
-/* ############# PLAYER INFORMATION IN LINES ############# */ 
 
+/* ############# PLAYER INFORMATION IN LINES ############# */ 
 .playerRank{
     margin-left:1%;
     float: left;
     width: 10%;
+    color: black;
 }
 
 .playerName{
     float: left;
     width: 25%;
+    color: black;
+}
+
+.playerName:hover{
+    opacity: 0.8;
 }
 
 .playerRating{
     float: right;
     width: 15%;
     text-align: right;
+    color: black;
 }
 
 .playerGames{
@@ -104,23 +111,14 @@ body{
     text-align: right;
     margin-right: 1%;
     width: 20%;
+    color: black;
 }
 
 .playerWinratio{
     float: right;
     width: 20%;
     text-align: center;
-}
-
-/* #################### LEADERBOARDS ##################### */
-.leaderboard-container{
-    margin-top: 10px;
-    margin-bottom: 50px;
-    margin-left: auto;
-    margin-right: auto;
-    min-width: 250px;
-    width: 80%;
-    max-width: 800px;
+    color: black;
 }
 
 .colum-names{
@@ -133,15 +131,21 @@ body{
 
 .line-even{
     width: 100%;
-    background-color: #999999; /* 60% grey */
+    color: black;
+    background-color: #999999 !important; /* 60% grey */
     overflow: hidden;
     padding-top: 2px;
     padding-bottom: 2px;
 }
 
+.bg-special{
+    background-color: #eae9e9 !important;
+}
+
 .line-odd{
     width: 100%;    
-    background-color: lightgrey;
+    color: black;
+    background-color: lightgrey !important;
     overflow: hidden;
     padding-top: 2px;
     padding-bottom: 2px;

@@ -85,8 +85,12 @@ def leaderboard():
     db = DatabaseConnection(app.config["DB_PATH"])
 
     if page:
+        pageInt = int(page)
+        if pageInt < 0:
+            pageInt = 0
         start = SEGMENT * int(page)
     else:
+        pageInt = 0
         start = 0
 
     # handle find player request #
@@ -94,7 +98,8 @@ def leaderboard():
     searchName = ""
 
     if playerName:
-        playerInLeaderboard, rank = db.findPlayerByName(playerName)
+        playerInLeaderboard = db.findPlayerByName(playerName)
+        rank = playerInLeaderboard.rank
         if not playerInLeaderboard:
             cannotFindPlayer = flask.Markup("<div class=noPlayerFound>No player of that name</div>")
             start = 0
@@ -136,7 +141,9 @@ def leaderboard():
                                                         start=start, \
                                                         endOfBoardIndicator=endOfBoardIndicator, \
                                                         findPlayer=cannotFindPlayer, \
-                                                        searchName=searchName)
+                                                        searchName=searchName,
+                                                        nextPageNumber=int(pageInt)+1,
+                                                        prevPageNumber=int(pageInt)-1)
     return finalResponse
 
 @app.route('/static/<path:path>')

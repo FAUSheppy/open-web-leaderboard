@@ -4,7 +4,6 @@ var page   = url.searchParams.get("page")
 var player = url.searchParams.get("string")
 var buttonBackward = document.getElementById("button-backward")
 var buttonForward  = document.getElementById("button-forward")
-var buttonFirst    = document.getElementById("button-first")
 var isLastPage     = document.getElementById("eof")
 
 /* clean URL from unessesary parameters */
@@ -14,10 +13,7 @@ url.searchParams.delete("string")
 /* disable buttons if nessesary */
 if(!page || page == "0"){
     buttonBackward.disabled = true
-    buttonFirst.disabled   = true
-
     buttonBackward.classList.add("disabled")
-    buttonFirst.classList.add("disabled")
 }
 
 if(isLastPage){
@@ -76,17 +72,17 @@ function firstPage(){
 }
 
 /* input fields */
-var gotoRankInputField = document.getElementById("gotoRank");
-gotoRankInputField.addEventListener("keyup", function(event) {
-    if (event.key == "Enter") {
-        event.preventDefault();
-        var rank = gotoRankInputField.value
-        var page = Math.trunc((rank - 1)/100)
-        url.searchParams.set("page", page)
-        url.searchParams.set("goto", rank)
-        window.location.href = url.href
-    }
-});
+//var gotoRankInputField = document.getElementById("gotoRank");
+//gotoRankInputField.addEventListener("keyup", function(event) {
+//    if (event.key == "Enter") {
+//        event.preventDefault();
+//        var rank = gotoRankInputField.value
+//        var page = Math.trunc((rank - 1)/100)
+//        url.searchParams.set("page", page)
+//        url.searchParams.set("goto", rank)
+//        window.location.href = url.href
+//    }
+//});
 
 var getPlayerInputField = document.getElementById("getPlayer");
 getPlayerInputField.addEventListener("keyup", function(event) {

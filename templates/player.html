@@ -22,11 +22,9 @@
         <script src="static/bootstrap/js/mdb.min.js"></script>
 
     </head>
-    <body>
-        <div class=top-bar role="navigation">
-            <button id="button-backward" type="button" href="/" class=top-button>Back</button>
-        </div>
-        <div class=leaderboard-container role="main">
+    <body class="bg-special">
+        {% include 'navbar.html' %}
+        <div class="container mt-3 mb-3" role="main">
             <div class="player-headline">
                 <h1> 
                     {{ player.name }}
@@ -40,6 +38,9 @@
                 <canvas id="lineChart">
                 </canvas>
             </div>
+            <p class="mt-5 mb-3">
+                *Historical data was not recorded before 06/2020
+            </p>
         </div>
         {% include 'footer.html' %}
         <script defer>

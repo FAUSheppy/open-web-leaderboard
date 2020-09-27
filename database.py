@@ -99,7 +99,7 @@ class DatabaseConnection:
                 return (None, None)
     
         playerInLeaderboard = player.PlayerInLeaderboard(playerRow)
-        player.rank = getPlayerRank(playerInLeaderboard)
+        playerInLeaderboard.rank = self.getPlayerRank(playerInLeaderboard)
         return playerInLeaderboard
 
     def getPlayerRank(self, player):
