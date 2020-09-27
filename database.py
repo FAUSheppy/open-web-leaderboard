@@ -37,7 +37,7 @@ class DatabaseConnection:
         '''Get historical data for a player'''
 
         cursor = self.connHistorical.cursor()
-        cursor.execute("SELECT * FROM playerHistoricalData where id = ?", (playerId,))
+        cursor.execute("SELECT * FROM playerHistoricalData where id = ? order by timestamp ASC", (playerId,))
         rows = cursor.fetchall()
 
         PLAYER_ID = 0
