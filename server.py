@@ -68,6 +68,9 @@ def player():
                 maxRating = max(maxRating, int(ratingString))
 
     yMin, yMax = prettifyMinMaxY(minRating, maxRating)
+    
+    # change displayed rank to start from 1 :)
+    player.rank += 1
 
     return flask.render_template("player.html", player=player, CSV_RATINGS=",".join(csv_ratings), 
                                     CSV_MONTH_YEAR_OF_RATINGS=",".join(csv_month_year),
