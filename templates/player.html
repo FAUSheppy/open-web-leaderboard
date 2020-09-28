@@ -33,6 +33,8 @@
                     Rating: <i>{{ player.rating }}</i> <br>
                     {% if player.rank == 0 %}
                         <i><small>missing {{ 10 - player.games }} placement games</small></i>
+                    {% elif not player.lastGame %}
+                        <i><small>Hasn't played enought games recently</small></i>
                     {% else %}
                         Rank: {{ player.rank }}
                     {%endif%}

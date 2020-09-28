@@ -17,6 +17,7 @@ class PlayerInLeaderboard:
         self.wins       = int(wins)
         self.loses      = self.games - self.wins
         self.rank       = None
+        self.lastGame   = lastGame
 
         # determine winratio #
         if self.games == 0:
