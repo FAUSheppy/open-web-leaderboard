@@ -102,6 +102,8 @@ def leaderboard():
 
     if playerName:
         playerInLeaderboard = db.findPlayerByName(playerName)
+        if(playerInLeaderboard.games < 10):
+            return flask.redirect("/player?id={}".format(playerInLeaderboard.playerId))
         rank = playerInLeaderboard.rank
         if not playerInLeaderboard:
             cannotFindPlayer = flask.Markup("<div class=noPlayerFound>No player of that name</div>")

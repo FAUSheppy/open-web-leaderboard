@@ -29,7 +29,7 @@ class DatabaseConnection:
         '''Get the total number of players in the database'''
 
         cursor = self.connPlayers.cursor()
-        cursor.execute("SELECT Count(*) FROM players")
+        cursor.execute("SELECT Count(*) FROM players where games >= 10")
         count = cursor.fetchone()[0]
         return count
 
@@ -77,7 +77,8 @@ class DatabaseConnection:
     
         cursor = self.connPlayers.cursor()
         limit = end - start
-        sqlQuery = "Select * FROM players ORDER BY (mu - 2*sigma) DESC LIMIT ? OFFSET ?"
+        sqlQuery = '''Select * FROM players where games >= 10
+                        ORDER BY (mu - 2*sigma) DESC LIMIT ? OFFSET ?'''
         cursor.execute(sqlQuery, (limit, start))
         rows = cursor.fetchall()
         playerList = []
@@ -110,7 +111,9 @@ class DatabaseConnection:
             can't and shouldn't be used to identify a player'''
     
         cursor = self.connPlayers.cursor()
-        cursor.execute("SELECT COUNT(*) from players where (mu-2*sigma) > (?-2*?);",
+        if(player.games < 10):
+            return -1
+        cursor.execute("SELECT COUNT(*) from players where games >= 10 and (mu-2*sigma) > (?-2*?);",
                             (player.mu, player.sigma))
         rank = cursor.fetchone()[0]
         return rank

@@ -31,7 +31,11 @@
                 </h1>
                 <h3>
                     Rating: <i>{{ player.rating }}</i> <br>
-                    Rank: {{ player.rank }}
+                    {% if player.rank == 0 %}
+                        <i><small>missing {{ 10 - player.games }} placement games</small></i>
+                    {% else %}
+                        Rank: {{ player.rank }}
+                    {%endif%}
                 </h3>
             </div>
             <div class="plot-container">
