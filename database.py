@@ -29,7 +29,7 @@ class DatabaseConnection:
         '''Get the total number of players in the database'''
 
         cursor = self.connPlayers.cursor()
-        cursor.execute("SELECT Count(*) FROM players where games >= 10")
+        cursor.execute("SELECT Count(*) FROM players where games >= 10 and not lastgame is null")
         count = cursor.fetchone()[0]
         return count
 
@@ -78,6 +78,7 @@ class DatabaseConnection:
         cursor = self.connPlayers.cursor()
         limit = end - start
         sqlQuery = '''Select * FROM players where games >= 10
+                        and not lastgame is null
                         ORDER BY (mu - 2*sigma) DESC LIMIT ? OFFSET ?'''
         cursor.execute(sqlQuery, (limit, start))
         rows = cursor.fetchall()
@@ -113,7 +114,9 @@ class DatabaseConnection:
         cursor = self.connPlayers.cursor()
         if(player.games < 10):
             return -1
-        cursor.execute("SELECT COUNT(*) from players where games >= 10 and (mu-2*sigma) > (?-2*?);",
+        cursor.execute('''SELECT COUNT(*) from players where games >= 10 
+                            and not lastgame is null
+                            and (mu-2*sigma) > (?-2*?);''',
                             (player.mu, player.sigma))
         rank = cursor.fetchone()[0]
         return rank
