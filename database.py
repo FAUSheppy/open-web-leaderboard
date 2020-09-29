@@ -3,6 +3,7 @@ import json
 import sqlite3
 import player
 import os
+import Round
 
 DATABASE_PLAYERS    = "players.sqlite"
 DATABASE_ROUNDS     = "rounds.sqlite"
@@ -120,3 +121,18 @@ class DatabaseConnection:
                             (player.mu, player.sigma))
         rank = cursor.fetchone()[0]
         return rank
+
+    def roundsBetweenDates(self, start, end):
+        '''Get rounds played between two times'''
+
+        cursor = self.connRounds.cursor()
+        cursor.execute('''SELECT * FROM rounds WHERE timestamp between ? and ?''', 
+                        (start.timestamp(), end.timestamp()))
+        
+        print('''SELECT * FROM rounds WHERE timestamp between {} and {}'''.format( 
+                        start.timestamp(), end.timestamp()))
+
+        rounds = []
+        for row in cursor:
+            rounds += [Round.Round(row)]
+        return rounds

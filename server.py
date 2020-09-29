@@ -28,6 +28,32 @@ def prettifyMinMaxY(computedMin, computedMax):
     else:
         return (computedMin - 100, 4000)
 
+@app.route("/rounds-by-timestamp")
+def rounds():
+    '''Show rounds played on the server'''
+    
+    start = flask.request.args.get("start")
+    end   = flask.request.args.get("end")
+    
+    if not start or not end:
+        start = datetime.datetime.now() - datetime.timedelta(days=4000)
+        end   = datetime.datetime.now()
+    else:
+        start = datetime.datetime.fromtimestamp(start)
+        end   = datetime.datetime.fromtimestamp(end)
+    
+    db = DatabaseConnection(app.config["DB_PATH"])
+    rounds = db.roundsBetweenDates(start, end)
+
+    return flask.render_template("rounds.html", rounds=rounds)
+
+
+    # get timestamp
+    # display players
+    # display rating change
+    # display outcome
+    # display map
+
 @app.route("/player")
 def player():
     '''Show Info about Player'''
