@@ -126,12 +126,9 @@ class DatabaseConnection:
         '''Get rounds played between two times'''
 
         cursor = self.connRounds.cursor()
-        cursor.execute('''SELECT * FROM rounds WHERE timestamp between ? and ?''', 
-                        (start.timestamp(), end.timestamp()))
+        cursor.execute('''SELECT * FROM rounds WHERE timestamp between ? and ? 
+                            order by timestamp DESC''', (start.timestamp(), end.timestamp()))
         
-        print('''SELECT * FROM rounds WHERE timestamp between {} and {}'''.format( 
-                        start.timestamp(), end.timestamp()))
-
         rounds = []
         for row in cursor:
             rounds += [Round.Round(row)]

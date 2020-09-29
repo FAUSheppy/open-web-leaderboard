@@ -33,6 +33,8 @@
                         <th class="th-sm">Winner</th>
                         <th class="th-sm">Duration</th>
                         <th class="th-sm">Start Time</th>
+                        <th class="th-sm">Rating System Winner Prediction</th>
+                        <th class="th-sm">Confidence</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,6 +44,8 @@
                        <td>{{ r.winnerSideString }}</td>
                        <td>{{ r.duration }}</td>
                        <td>{{ r.startTime.strftime('%H:%M %d.%m.%Y') }}</td>
+                       <td>{{ r.prediction }}</td>
+                       <td>{{ r.confidence }}%</td>
                     </tr>
                 {% endfor %}
                 </tbody>
