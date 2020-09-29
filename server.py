@@ -28,7 +28,24 @@ def prettifyMinMaxY(computedMin, computedMax):
     else:
         return (computedMin - 100, 4000)
 
+@app.route("/round-info")
+def singleRound():
+    '''Display info about a single round itdentified by it's timestamp'''
+
+    timestamp = flask.request.args.get("id")
+    if not timestamp:
+        return ("", 404)
+    db = DatabaseConnection(app.config["DB_PATH"])
+    r = db.getRoundByTimestamp(timestamp)
+    r = db.calcRatingChanges(r)
+
+    if not r:
+        return ("", 404)
+
+    return flask.render_template("single_round.html", r=r) 
+
 @app.route("/rounds-by-timestamp")
+@app.route("/rounds")
 def rounds():
     '''Show rounds played on the server'''
     

@@ -133,3 +133,39 @@ class DatabaseConnection:
         for row in cursor:
             rounds += [Round.Round(row)]
         return rounds
+
+    def calcRatingChanges(self, roundObj):
+        '''Calculates and sets rating changes in the player objects of this round'''
+
+        cursorHist = self.connHistorical.cursor()
+        for p in roundObj.winners + roundObj.losers:
+            cursorHist.execute('''SELECT mu,sima FROM playerHistoricalData 
+                                WHERE timestamp < ? AND id = ? LIMIT 1 ''',
+                                (roundObj.startTime.timestamp(), p.playerId))
+            tupelPrev = cursorHist.fetchone()
+            cursorHist.execute('''SELECT mu,sima FROM playerHistoricalData
+                                WHERE timestamp == ? AND id = ? LIMIT 1''', 
+                                (roundObj.startTime.timestamp(), p.playerId))
+            tupelAfter = cursorHist.fetchone()
+            if tupelPrev and tupelAfter:
+                muPrev, sigmaPrev = tupelPrev
+                muAfter, sigmaAfter = tupelAfter
+                p.mu = muPrev
+                p.sigma = sigmaPrev
+                p.muChange = muAfter - muPrev
+                p.sigmaChange = sigmaAfter - sigmaPrev
+                p.ratingChangeString = str( ( muAfter-2*sigmaAfter ) - ( muPrev-2*sigmaPrev) )
+
+        return roundObj
+
+    def getRoundByTimestamp(self, timestamp):
+        '''Get a round by it's start time (more or less it primary key)'''
+
+        cursorRounds = self.connRounds.cursor()
+        cursorRounds.execute('''SELECT * from rounds where timestamp = ?''', (timestamp,))
+        row = cursorRounds.fetchone()
+        if not row:
+            return None
+        return Round.Round(row)
+
+

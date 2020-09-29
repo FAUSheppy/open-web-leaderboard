@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 import flask
 
+def playerFromDict(d):
+    return PlayerInLeaderboard([d["id"], d["name"], None, 0, 0, 0, 0])
+
 class PlayerInLeaderboard:
     def __init__(self, dbRow):
         '''Initialize a player object later to be serialized to HTML'''
@@ -18,6 +21,10 @@ class PlayerInLeaderboard:
         self.loses      = self.games - self.wins
         self.rank       = None
         self.lastGame   = lastGame
+
+        self.muChange = None
+        self.sigmaChange = None
+        self.ratingChangeString = "--"
 
         # determine winratio #
         if self.games == 0:

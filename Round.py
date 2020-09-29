@@ -1,5 +1,6 @@
 import json
 import datetime
+import player
 
 class Round:
     def __init__(self, dbRow):
@@ -11,9 +12,11 @@ class Round:
         losersParsed  = json.loads(losers)
 
         self.startTime = startTime
-        self.winners = winners
-        self.losers = losers
+        self.winners = [ player.playerFromDict(wp) for wp in winnersParsed ]
+        self.losers =  [ player.playerFromDict(lp) for lp in losersParsed  ]
         self.winnerSide = winnerSide
+        self.duration = datetime.timedelta(seconds=int(duration))
+
         if winnerSide == 2:
             self.winnerSideString = "Security"
             self.loserSideString = "Insurgent"
@@ -24,11 +27,11 @@ class Round:
             self.mapName = mapName
         else:
             self.mapName = "unavailiable"
-        self.duration = datetime.timedelta(seconds=int(duration))
+
+        self.confidence = int(confidence * 100)
         if prediction == 0:
             self.prediction = self.winnerSideString
         elif prediction == 1:
             self.prediction = self.loserSideString
         else:
             self.prediction = "Error"
-        self.confidence = int(confidence * 100)
