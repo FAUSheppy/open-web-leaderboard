@@ -8,16 +8,24 @@
     <body class="bg-special">
         {% include 'navbar.html' %}
         <div class="container mt-3 mb-3" role="main">
-            <h1>Round {{ r.id }}</h1>
-            <h4>{{ r.startTime }}</h4>
-            <h4>Map: {{ r.mapName }}</h4>
-            <h4>Duration: {{ r.duration }}</h4>
+            
+            <div class="row">
+                <div class="col-sm">
+                    <h1>Round {{ r.id }}</h1>
+                    <h4>{{ r.startTime }}</h4>
+                    <h4>Map: {{ r.mapName }}</h4>
+                    <h4>Duration: {{ r.duration }}</h4>
 
-            {% if r.invalid %}
-            <div>
-                <h5 style="color: red;">{{ r.invalid }}</h5>
+                    {% if r.invalid %}
+                    <div>
+                        <h5 style="color: red;">{{ r.invalid | safe }}</h5>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-sm">
+                    <!-- to be used -->
+                </div>
             </div>
-            {% endif %}
             
             <hr>
             <div class="row">
@@ -68,6 +76,11 @@
                     </div>
                     {% endfor %}
                 </div>
+            </div>
+            <hr>
+            <div class="mt-3">
+                <small style="font-weight: bold;">Stats for nerds</small><br>
+                <small>Balance: {{ 100 - r.confidence }}%</small><br>
             </div>
         </div>
         {% include 'footer.html' %}

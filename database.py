@@ -3,6 +3,7 @@ import json
 import sqlite3
 import player
 import os
+import datetime
 import Round
 
 DATABASE_PLAYERS    = "players.sqlite"
@@ -148,7 +149,7 @@ class DatabaseConnection:
                 continue
 
             cursorHist.execute('''SELECT mu,sima FROM playerHistoricalData 
-                                WHERE timestamp < ? AND id = ? LIMIT 1 ''',
+                                WHERE timestamp < ? AND id = ? order by timestamp DESC LIMIT 1 ''',
                                 (roundObj.startTime.timestamp(), p.playerId))
             tupelPrev = cursorHist.fetchone()
             cursorHist.execute('''SELECT mu,sima FROM playerHistoricalData
@@ -163,20 +164,23 @@ class DatabaseConnection:
                 p.muChange = muAfter - muPrev
                 p.sigmaChange = sigmaAfter - sigmaPrev
                 ratingChange = int( (muAfter-muPrev) - 2*(sigmaAfter-sigmaPrev) )
+                if abs(ratingChange) > 500:
+                    p.ratingChangeString = "Placements"
+                    continue
                 if(ratingChange < 0):
                     p.ratingChangeString = "- &nbsp;{:x>5}".format(abs(ratingChange))
                 else:
                     p.ratingChangeString = "+ {:x>5}".format(ratingChange)
                 p.ratingChangeString = p.ratingChangeString.replace("x", "&nbsp;")
 
-        roundObj.winnerRatingTotal = sum([p.mu - 2*p.sigma for p in roundObj.winners])
-        roundObj.losersRatingTotal = sum([p.mu - 2*p.sigma for p in roundObj.losers])
-        higher = max(roundObj.winnerRatingTotal, roundObj.losersRatingTotal)
-        lower  = min(roundObj.winnerRatingTotal, roundObj.losersRatingTotal)
-        if higher/lower > 2.1:
-            roundObj.invalid = "Not rated because of team imbalance."
-        else:
-            roundObj.invalid = ""
+        roundObj.invalid = ""
+        roundObj.teamPtRatio = 0
+        if roundObj.teamPtRatio > 2.1:
+            roundObj.invalid += "Not rated because of playtime imbalance."
+        if roundObj.duration < datetime.timedelta(seconds=120):
+            if roundObj.invalid:
+                roundObj.invalid += "<br>"
+            roundObj.invalid += "Not rated because too short."
 
         return roundObj
 

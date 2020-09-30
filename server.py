@@ -97,6 +97,7 @@ def player():
 
     csv_month_year = []
     csv_ratings = []
+    csv_timestamps = []
 
     minRating = 3000
     maxRating = 0
@@ -111,6 +112,7 @@ def player():
                 tsMs = str(int(t.timestamp() * 1000))
                 ratingString = str(int(datapoints[dpk]["mu"]) - 2*int(datapoints[dpk]["sigma"]))
                 ratingAmored = '{ x : ' + tsMs + ', y : ' + ratingString + '}'
+                csv_timestamps += [str(tsMs)]
                 csv_ratings += [ratingAmored]
                 
                 tickCounter -= 1
@@ -128,6 +130,7 @@ def player():
 
     return flask.render_template("player.html", player=player, CSV_RATINGS=",".join(csv_ratings), 
                                     CSV_MONTH_YEAR_OF_RATINGS=",".join(csv_month_year),
+                                    CSV_TIMESTAMPS=csv_timestamps,
                                     Y_MIN=yMin, Y_MAX=yMax)
 
 @app.route('/leaderboard')
