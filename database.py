@@ -165,7 +165,7 @@ class DatabaseConnection:
                 p.sigmaChange = sigmaAfter - sigmaPrev
                 ratingChange = int( (muAfter-muPrev) - 2*(sigmaAfter-sigmaPrev) )
                 if abs(ratingChange) > 500:
-                    p.ratingChangeString = "Placements"
+                    p.ratingChangeString = "N/A"
                     continue
                 if(ratingChange < 0):
                     p.ratingChangeString = "- &nbsp;{:x>5}".format(abs(ratingChange))
