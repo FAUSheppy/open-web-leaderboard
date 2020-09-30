@@ -32,8 +32,9 @@
         </div>
         {% include 'footer.html' %}
         <script defer>
-            var canvas = document.getElementById("lineChart").getContext('2d');
-            var historicalRank = new Chart(canvas, {
+            var canvas = document.getElementById("lineChart")
+            var ctx = canvas.getContext('2d');
+            var historicalRank = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: [ {{ CSV_MONTH_YEAR_OF_RATINGS | safe }} ],
@@ -44,7 +45,7 @@
                         borderColor: [ 'rgba(200, 99, 132, .7)' ],
                         borderWidth: 2
                     }],
-		},
+		        },
                 options: {
                     scales: {
                         yAxes: [{
@@ -75,6 +76,16 @@
                     responsive: true
                 }
             });
+            var datasetHelper = {{ CSV_TIMESTAMPS | safe }}
+            canvas.onclick = function (evt) {
+                var points = historicalRank.getElementsAtEvent(evt);
+                if(points.length != 1){
+                    return
+                }
+                var timestampMs = datasetHelper[points[0]._index] / 1000
+                var idString = timestampMs.toString()
+                window.location.href = "/round-info?id=" + idString
+            };
         </script>
     </body>
 </html>
