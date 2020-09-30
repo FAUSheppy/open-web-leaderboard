@@ -2,23 +2,9 @@
 <html lang="en">
     <head>
         <title>Leaderboard</title>
-        <meta name="Description" content="Open Web Leaderboard">
-        <link rel="shortcut icon" href="/static/defaultFavicon.ico">
+        <meta name="Description" content="Insurgency Leaderboard">
         <script src="static/buttons.js" defer></script>
-
-        <!-- needed for @media-css mofiers -->
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-
-        <link rel="stylesheet" href="/static/bootstrap/fontawesome.css">
-        <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <link href="/static/bootstrap/css/mdb.min.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="/static/site.css">
-
-        <script src="/static/bootstrap/js/jquery.js"></script>
-        <script src="/static/bootstrap/js/popper.js"></script>
-        <script src="/static/bootstrap/js/bootstrap.js"></script>
-        <script src="/static/bootstrap/js/mdb.min.js"></script>
-
+        {% include "default_head_content.html" %}
     </head>
     <body>
         {% include 'navbar_leaderboard.html' %}

@@ -34,13 +34,20 @@ def singleRound():
 
     timestamp = flask.request.args.get("id")
     if not timestamp:
-        return ("", 404)
+        return ("ID Missing", 404)
+    if not timestamp.endswith(".0"):
+        timestamp = timestamp + ".0"
     db = DatabaseConnection(app.config["DB_PATH"])
     r = db.getRoundByTimestamp(timestamp)
+    if not r:
+        return ("Round not found", 404)
     r = db.calcRatingChanges(r)
 
     if not r:
         return ("", 404)
+
+    r.winners = sorted(r.winners, key=lambda p: p.participation, reverse=True)
+    r.losers = sorted(r.losers, key=lambda p: p.participation, reverse=True)
 
     return flask.render_template("single_round.html", r=r) 
 
@@ -53,7 +60,7 @@ def rounds():
     end   = flask.request.args.get("end")
     
     if not start or not end:
-        start = datetime.datetime.now() - datetime.timedelta(days=4000)
+        start = datetime.datetime.now() - datetime.timedelta(days=7)
         end   = datetime.datetime.now()
     else:
         start = datetime.datetime.fromtimestamp(start)
@@ -97,15 +104,19 @@ def player():
     if histData:
         datapoints = histData[playerId]
         if datapoints:
+
+            tickCounter = 10
             for dpk in datapoints.keys():
-                
-                ratingString = str(int(datapoints[dpk]["mu"]) - 2*int(datapoints[dpk]["sigma"]))
-                ratingAmored = '"' + ratingString + '"'
-                csv_ratings += [ratingAmored]
                 t = datetime.datetime.fromtimestamp(int(float(dpk)))
-                tString = t.strftime("%m %Y")
-                tStringAmored = '"' + tString + '"'
-                csv_month_year += [tStringAmored]
+                tsMs = str(int(t.timestamp() * 1000))
+                ratingString = str(int(datapoints[dpk]["mu"]) - 2*int(datapoints[dpk]["sigma"]))
+                ratingAmored = '{ x : ' + tsMs + ', y : ' + ratingString + '}'
+                csv_ratings += [ratingAmored]
+                
+                tickCounter -= 1
+                if tickCounter <= 0:
+                    tickCounter = 10
+                    csv_month_year += ['new Date({})'.format(tsMs)]
 
                 minRating = min(minRating, int(ratingString))
                 maxRating = max(maxRating, int(ratingString))
@@ -145,13 +156,13 @@ def leaderboard():
 
     if playerName:
         playerInLeaderboard = db.findPlayerByName(playerName)
-        if(playerInLeaderboard.games < 10):
-            return flask.redirect("/player?id={}".format(playerInLeaderboard.playerId))
-        rank = playerInLeaderboard.rank
         if not playerInLeaderboard:
             cannotFindPlayer = flask.Markup("<div class=noPlayerFound>No player of that name</div>")
             start = 0
         else:
+            rank = playerInLeaderboard.rank
+            if(playerInLeaderboard.games < 10):
+                return flask.redirect("/player?id={}".format(playerInLeaderboard.playerId))
             searchName = playerInLeaderboard.name
             start = rank - (rank % SEGMENT)
 

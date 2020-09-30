@@ -101,8 +101,7 @@ class DatabaseConnection:
             cursor.execute("SELECT * FROM players WHERE name LIKE ?", (playerNamePrepared,))
             playerRow = cursor.fetchone()
             if not playerRow:
-                conn.close()
-                return (None, None)
+                return None
     
         playerInLeaderboard = player.PlayerInLeaderboard(playerRow)
         playerInLeaderboard.rank = self.getPlayerRank(playerInLeaderboard)
@@ -127,6 +126,7 @@ class DatabaseConnection:
 
         cursor = self.connRounds.cursor()
         cursor.execute('''SELECT * FROM rounds WHERE timestamp between ? and ? 
+                            AND duration > 120.0
                             order by timestamp DESC''', (start.timestamp(), end.timestamp()))
         
         rounds = []
@@ -139,6 +139,14 @@ class DatabaseConnection:
 
         cursorHist = self.connHistorical.cursor()
         for p in roundObj.winners + roundObj.losers:
+            cursorHist.execute('''SELECT count(*) FROM playerHistoricalData 
+                                WHERE timestamp < ? AND id = ?''',
+                                (roundObj.startTime.timestamp(), p.playerId))
+
+            if(cursorHist.fetchone()[0] < 10):
+                p.ratingChangeString = "Placements"
+                continue
+
             cursorHist.execute('''SELECT mu,sima FROM playerHistoricalData 
                                 WHERE timestamp < ? AND id = ? LIMIT 1 ''',
                                 (roundObj.startTime.timestamp(), p.playerId))
@@ -154,7 +162,21 @@ class DatabaseConnection:
                 p.sigma = sigmaPrev
                 p.muChange = muAfter - muPrev
                 p.sigmaChange = sigmaAfter - sigmaPrev
-                p.ratingChangeString = str( ( muAfter-2*sigmaAfter ) - ( muPrev-2*sigmaPrev) )
+                ratingChange = int( (muAfter-muPrev) - 2*(sigmaAfter-sigmaPrev) )
+                if(ratingChange < 0):
+                    p.ratingChangeString = "- &nbsp;{:x>5}".format(abs(ratingChange))
+                else:
+                    p.ratingChangeString = "+ {:x>5}".format(ratingChange)
+                p.ratingChangeString = p.ratingChangeString.replace("x", "&nbsp;")
+
+        roundObj.winnerRatingTotal = sum([p.mu - 2*p.sigma for p in roundObj.winners])
+        roundObj.losersRatingTotal = sum([p.mu - 2*p.sigma for p in roundObj.losers])
+        higher = max(roundObj.winnerRatingTotal, roundObj.losersRatingTotal)
+        lower  = min(roundObj.winnerRatingTotal, roundObj.losersRatingTotal)
+        if higher/lower > 2.1:
+            roundObj.invalid = "Not rated because of team imbalance."
+        else:
+            roundObj.invalid = ""
 
         return roundObj
 

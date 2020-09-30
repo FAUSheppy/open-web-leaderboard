@@ -3,24 +3,7 @@
     <head>
         <title>Player: {{ player.name }}</title>
         <meta name="Description" content="Player: {{ player.name }}">
-        <link rel="stylesheet" type="text/css" href="/static/site.css">
-        <link rel="shortcut icon" href="/static/defaultFavicon.ico">
-
-        <!-- needed for @media-css mofiers -->
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-        <!-- Bootstrap core CSS -->
-        <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Material Design Bootstrap -->
-        <link href="static/bootstrap/css/mdb.min.css" rel="stylesheet">
-
-        <script src="static/bootstrap/js/jquery.js"></script>
-        <script src="static/bootstrap/js/popper.js"></script>
-        <script src="static/bootstrap/js/bootstrap.js"></script>
-        <script src="static/bootstrap/js/mdb.min.js"></script>
-
+        {% include "default_head_content.html" %}
     </head>
     <body class="bg-special">
         {% include 'navbar.html' %}
@@ -66,10 +49,26 @@
                     scales: {
                         yAxes: [{
                             ticks : {
-                            suggestedMin : {{ Y_MIN }},
-                            suggestedMax : {{ Y_MAX }},
-                            min : {{ Y_MIN }},
-                            max : {{ Y_MAX }}
+                                suggestedMin : {{ Y_MIN }},
+                                suggestedMax : {{ Y_MAX }},
+                                min : {{ Y_MIN }},
+                                max : {{ Y_MAX }}
+                            }
+                        }],
+                        xAxes: [{
+                            type: 'time',
+                            distribution: 'series',
+                            time: {
+                                round : false,
+                                unit: "day"
+                            },
+                            ticks : {
+                                autoSkip : true,
+                                source : "labels"
+                            },
+                            gridLines: {
+                                display: false,
+                                offsetGridLines: true
                             }
                         }]
                     },
