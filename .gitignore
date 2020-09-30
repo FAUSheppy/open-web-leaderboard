@@ -1,4 +1,5 @@
 *.swp
+*.sqlite
 config.py
 *.txt
 *.ncsv
@@ -11,3 +12,5 @@ __pychache__/
 build/
 configparse_wrapper/
 static/bootstrap/
+static/moment.js
+*.exe
