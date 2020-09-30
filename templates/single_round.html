@@ -22,9 +22,6 @@
                     </div>
                     {% endif %}
                 </div>
-                <div class="col-sm">
-                    <!-- to be used -->
-                </div>
             </div>
             
             <hr>
@@ -42,7 +39,7 @@
                     {% for p in r.winners %}
                     <div class="row">
                         <div class="col-sm" style="overflow: hidden;">
-                            {{ p.name }}
+                            <a href="/player?id={{ p.playerId }}">{{ p.name }}</a>
                         </div>
                         <div class="col-sm">
                             {{ p.participation }}%
@@ -61,7 +58,7 @@
                     {% for p in r.losers %}
                     <div class="row">
                         <div class="col-sm" style="overflow: hidden;">
-                            {{ p.name }}
+                            <a href="/player?id={{ p.playerId }}">{{ p.name }}</a>
                         </div>
                         <div class="col-sm">
                             {{ p.participation }}%
