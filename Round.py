@@ -29,6 +29,7 @@ class Round:
             self.mapName = "unavailiable"
 
         self.confidence = int(confidence * 100)
+        self.numericPrediction = prediction
         if prediction == 0:
             self.prediction = self.winnerSideString
         elif prediction == 1:

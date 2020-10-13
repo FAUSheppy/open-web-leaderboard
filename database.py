@@ -168,4 +168,8 @@ class DatabaseConnection:
             return None
         return Round.Round(row)
 
+    def distinctMaps(self):
+        '''Get all distinct maps from rounds database'''
+        cursorRounds = self.connRounds.cursor()
+        return cursorRounds.execute('''SELECT DISTINCT map from rounds''')
 
