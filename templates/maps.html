@@ -47,7 +47,7 @@
                        <td style="color: green;">+{{ '%0.2f' | format(m.ratingSystemDeviation) }}%
                        </td>
                        {% else %}
-                       <td style="color: red;">+{{ '%0.2f' | format(m.ratingSystemDeviation) }}%
+                       <td style="color: red;">{{ '%0.2f' | format(m.ratingSystemDeviation) }}%
                        </td>
                        {% endif %}
                     </tr>
