@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 import flask
 
-def playerFromDict(d):
-    return PlayerInLeaderboard([d["id"], d["name"], None, 0, 0, 0, 0])
+def playerFromDict(d, duration):
+    p = PlayerInLeaderboard([d["id"], d["name"], None, 0, 0, 0, 0])
+    p.participation = min(int(d["active_time"]/duration*100), 100)
+    return p
 
 class PlayerInLeaderboard:
     def __init__(self, dbRow):
@@ -21,10 +23,11 @@ class PlayerInLeaderboard:
         self.loses      = self.games - self.wins
         self.rank       = None
         self.lastGame   = lastGame
+        self.participation = -1
 
         self.muChange = None
         self.sigmaChange = None
-        self.ratingChangeString = "--"
+        self.ratingChangeString = "N/A"
 
         # determine winratio #
         if self.games == 0:

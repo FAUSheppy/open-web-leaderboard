@@ -3,24 +3,7 @@
     <head>
         <title>Player: {{ player.name }}</title>
         <meta name="Description" content="Player: {{ player.name }}">
-        <link rel="stylesheet" type="text/css" href="/static/site.css">
-        <link rel="shortcut icon" href="/static/defaultFavicon.ico">
-
-        <!-- needed for @media-css mofiers -->
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-        <!-- Bootstrap core CSS -->
-        <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Material Design Bootstrap -->
-        <link href="static/bootstrap/css/mdb.min.css" rel="stylesheet">
-
-        <script src="static/bootstrap/js/jquery.js"></script>
-        <script src="static/bootstrap/js/popper.js"></script>
-        <script src="static/bootstrap/js/bootstrap.js"></script>
-        <script src="static/bootstrap/js/mdb.min.js"></script>
-
+        {% include "default_head_content.html" %}
     </head>
     <body class="bg-special">
         {% include 'navbar.html' %}
@@ -49,8 +32,9 @@
         </div>
         {% include 'footer.html' %}
         <script defer>
-            var canvas = document.getElementById("lineChart").getContext('2d');
-            var historicalRank = new Chart(canvas, {
+            var canvas = document.getElementById("lineChart")
+            var ctx = canvas.getContext('2d');
+            var historicalRank = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: [ {{ CSV_MONTH_YEAR_OF_RATINGS | safe }} ],
@@ -61,21 +45,47 @@
                         borderColor: [ 'rgba(200, 99, 132, .7)' ],
                         borderWidth: 2
                     }],
-		},
+		        },
                 options: {
                     scales: {
                         yAxes: [{
                             ticks : {
-                            suggestedMin : {{ Y_MIN }},
-                            suggestedMax : {{ Y_MAX }},
-                            min : {{ Y_MIN }},
-                            max : {{ Y_MAX }}
+                                suggestedMin : {{ Y_MIN }},
+                                suggestedMax : {{ Y_MAX }},
+                                min : {{ Y_MIN }},
+                                max : {{ Y_MAX }}
+                            }
+                        }],
+                        xAxes: [{
+                            type: 'time',
+                            distribution: 'series',
+                            time: {
+                                round : false,
+                                unit: "day"
+                            },
+                            ticks : {
+                                autoSkip : true,
+                                source : "labels"
+                            },
+                            gridLines: {
+                                display: false,
+                                offsetGridLines: true
                             }
                         }]
                     },
                     responsive: true
                 }
             });
+            var datasetHelper = {{ CSV_TIMESTAMPS | safe }}
+            canvas.onclick = function (evt) {
+                var points = historicalRank.getElementsAtEvent(evt);
+                if(points.length != 1){
+                    return
+                }
+                var timestampMs = datasetHelper[points[0]._index] / 1000
+                var idString = timestampMs.toString()
+                window.location.href = "/round-info?id=" + idString
+            };
         </script>
     </body>
 </html>

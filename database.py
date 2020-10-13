@@ -3,6 +3,7 @@ import json
 import sqlite3
 import player
 import os
+import datetime
 import Round
 
 DATABASE_PLAYERS    = "players.sqlite"
@@ -101,8 +102,7 @@ class DatabaseConnection:
             cursor.execute("SELECT * FROM players WHERE name LIKE ?", (playerNamePrepared,))
             playerRow = cursor.fetchone()
             if not playerRow:
-                conn.close()
-                return (None, None)
+                return None
     
         playerInLeaderboard = player.PlayerInLeaderboard(playerRow)
         playerInLeaderboard.rank = self.getPlayerRank(playerInLeaderboard)
@@ -127,6 +127,7 @@ class DatabaseConnection:
 
         cursor = self.connRounds.cursor()
         cursor.execute('''SELECT * FROM rounds WHERE timestamp between ? and ? 
+                            AND duration > 120.0
                             order by timestamp DESC''', (start.timestamp(), end.timestamp()))
         
         rounds = []
@@ -139,8 +140,16 @@ class DatabaseConnection:
 
         cursorHist = self.connHistorical.cursor()
         for p in roundObj.winners + roundObj.losers:
+            cursorHist.execute('''SELECT count(*) FROM playerHistoricalData 
+                                WHERE timestamp < ? AND id = ?''',
+                                (roundObj.startTime.timestamp(), p.playerId))
+
+            if(cursorHist.fetchone()[0] < 10):
+                p.ratingChangeString = "Placements"
+                continue
+
             cursorHist.execute('''SELECT mu,sima FROM playerHistoricalData 
-                                WHERE timestamp < ? AND id = ? LIMIT 1 ''',
+                                WHERE timestamp < ? AND id = ? order by timestamp DESC LIMIT 1 ''',
                                 (roundObj.startTime.timestamp(), p.playerId))
             tupelPrev = cursorHist.fetchone()
             cursorHist.execute('''SELECT mu,sima FROM playerHistoricalData
@@ -154,7 +163,24 @@ class DatabaseConnection:
                 p.sigma = sigmaPrev
                 p.muChange = muAfter - muPrev
                 p.sigmaChange = sigmaAfter - sigmaPrev
-                p.ratingChangeString = str( ( muAfter-2*sigmaAfter ) - ( muPrev-2*sigmaPrev) )
+                ratingChange = int( (muAfter-muPrev) - 2*(sigmaAfter-sigmaPrev) )
+                if abs(ratingChange) > 500:
+                    p.ratingChangeString = "N/A"
+                    continue
+                if(ratingChange < 0):
+                    p.ratingChangeString = "- &nbsp;{:x>5}".format(abs(ratingChange))
+                else:
+                    p.ratingChangeString = "+ {:x>5}".format(ratingChange)
+                p.ratingChangeString = p.ratingChangeString.replace("x", "&nbsp;")
+
+        roundObj.invalid = ""
+        roundObj.teamPtRatio = 0
+        if roundObj.teamPtRatio > 2.1:
+            roundObj.invalid += "Not rated because of playtime imbalance."
+        if roundObj.duration < datetime.timedelta(seconds=120):
+            if roundObj.invalid:
+                roundObj.invalid += "<br>"
+            roundObj.invalid += "Not rated because too short."
 
         return roundObj
 

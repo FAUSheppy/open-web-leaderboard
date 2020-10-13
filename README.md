@@ -11,6 +11,7 @@ The system was developed to be used with the [skillbird-framwork](https://github
 - [MDB Jquery](https://mdbootstrap.com/docs/jquery/getting-started/download/) (unpack to ./static/bootstrap/)
 - [Fontawesome](https://fontawesome.com/download) (move to static/boostrap/fontawesome.css)
 - ``python3 -m pip install -r req.txt``
+- [Moment.js](https://momentjs.com/downloads/moment.js) (directly into static/)
 
 
 # How to run

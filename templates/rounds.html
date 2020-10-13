@@ -3,24 +3,7 @@
     <head>
         <title>Rounds Played</title>
         <meta name="Description" content="Insurgency games played on the AtlantisHQ">
-        <link rel="stylesheet" type="text/css" href="/static/site.css">
-        <link rel="shortcut icon" href="/static/defaultFavicon.ico">
-
-        <!-- needed for @media-css mofiers -->
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-        <!-- Bootstrap core CSS -->
-        <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Material Design Bootstrap -->
-        <link href="static/bootstrap/css/mdb.min.css" rel="stylesheet">
-
-        <script src="static/bootstrap/js/jquery.js"></script>
-        <script src="static/bootstrap/js/popper.js"></script>
-        <script src="static/bootstrap/js/bootstrap.js"></script>
-        <script src="static/bootstrap/js/mdb.min.js"></script>
-
+        {% include "default_head_content.html" %}
     </head>
     <body class="bg-special">
         {% include 'navbar.html' %}
@@ -29,12 +12,13 @@
                     cellspacing="0" width="100%">
                 <thead>
                     <tr>
-                        <th class="th-sm">Map</th>
-                        <th class="th-sm">Winner</th>
-                        <th class="th-sm">Duration</th>
-                        <th class="th-sm">Start Time</th>
-                        <th class="th-sm">Rating System Winner Prediction</th>
-                        <th class="th-sm">Confidence</th>
+                        <th class="th-sm font-weight-bold">Map</th>
+                        <th class="th-sm font-weight-bold">Winner</th>
+                        <th class="th-sm font-weight-bold">Duration</th>
+                        <th class="th-sm font-weight-bold">Start Time</th>
+                        <th class="th-sm font-weight-bold">Winner Prediction</th>
+                        <th class="th-sm font-weight-bold">Prediction confidence</th>
+                        <th class="th-sm font-weight-bold">Game-ID</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,14 +27,29 @@
                        <td>{{ r.mapName }}</td>
                        <td>{{ r.winnerSideString }}</td>
                        <td>{{ r.duration }}</td>
-                       <td>{{ r.startTime.strftime('%H:%M %d.%m.%Y') }}</td>
-                       <td>{{ r.prediction }}</td>
+                       <td>{{ r.startTime.strftime('%d.%m.%Y %H:%M') }}</td>
+                       <td 
+                            {% if r.winnerSideString == r.prediction %}
+                                style="color: green";
+                            {% elif r.prediction != '-' %}
+                                style="color: red";
+                            {% endif %}
+                         >
+                         {{ r.prediction }}
+                       </td>
                        <td>{{ r.confidence }}%</td>
+                       <td><a href="/round-info?id={{ r.id }}">{{ r.id }}</a></td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
+        <script defer>
+            $(document).ready(function () {
+                $('#tableMain').DataTable();
+                $('.dataTables_length').addClass('bs-select');
+            });
+        </script>
         {% include 'footer.html' %}
     </body>
 </html>

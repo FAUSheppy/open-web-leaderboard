@@ -3,34 +3,82 @@
     <head>
         <title>Rounds Played</title>
         <meta name="Description" content="Insurgency games played on the AtlantisHQ">
-        <link rel="stylesheet" type="text/css" href="/static/site.css">
-        <link rel="shortcut icon" href="/static/defaultFavicon.ico">
-
-        <!-- needed for @media-css mofiers -->
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-        <!-- Bootstrap core CSS -->
-        <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Material Design Bootstrap -->
-        <link href="static/bootstrap/css/mdb.min.css" rel="stylesheet">
-
-        <script src="static/bootstrap/js/jquery.js"></script>
-        <script src="static/bootstrap/js/popper.js"></script>
-        <script src="static/bootstrap/js/bootstrap.js"></script>
-        <script src="static/bootstrap/js/mdb.min.js"></script>
-
+        {% include 'default_head_content.html' %}
     </head>
     <body class="bg-special">
         {% include 'navbar.html' %}
         <div class="container mt-3 mb-3" role="main">
-            {% for p in r.winners %}
-            <h4>{{ p.name }}{{ p.ratingChangeString }}</h4>
-            {% endfor %}
-            {% for p in r.losers %}
-            <h4>{{ p.name }}{{ p.ratingChangeString }}</h4>
-            {% endfor %}
+            
+            <div class="row">
+                <div class="col-sm">
+                    <h1>Round {{ r.id }}</h1>
+                    <h4>{{ r.startTime }}</h4>
+                    <h4>Map: {{ r.mapName }}</h4>
+                    <h4>Duration: {{ r.duration }}</h4>
+
+                    {% if r.invalid %}
+                    <div>
+                        <h5 style="color: red;">{{ r.invalid | safe }}</h5>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <hr>
+            <div class="row">
+                <div class="col-sm">
+                    <h5>Winners ({{ r.winnerSideString }})</h5>
+                </div>
+                <div class="col-sm">
+                    <h5>Losers ({{ r.loserSideString }})</h5>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm">
+                    {% for p in r.winners %}
+                    <div class="row">
+                        <div class="col-sm" style="overflow: hidden;">
+                            <a href="/player?id={{ p.playerId }}">{{ p.name }}</a>
+                        </div>
+                        <div class="col-sm">
+                            {{ p.participation }}%
+                        </div>
+                        <div class="col-sm">
+                            {% if not r.invalid %}
+                            <small style="color: green;">
+                                {{ p.ratingChangeString | safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="col-sm">
+                    {% for p in r.losers %}
+                    <div class="row">
+                        <div class="col-sm" style="overflow: hidden;">
+                            <a href="/player?id={{ p.playerId }}">{{ p.name }}</a>
+                        </div>
+                        <div class="col-sm">
+                            {{ p.participation }}%
+                        </div>
+                        <div class="col-sm">
+                            {% if not r.invalid %}
+                            <small style="color: red;">
+                                {{ p.ratingChangeString | safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <hr>
+            <div class="mt-3">
+                <small style="font-weight: bold;">Stats for nerds</small><br>
+                <small>Balance: {{ 100 - r.confidence }}%</small><br>
+            </div>
         </div>
         {% include 'footer.html' %}
     </body>
