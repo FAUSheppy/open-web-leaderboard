@@ -33,7 +33,7 @@
                         <th class="th-sm">Insurgent Win</th>
                         <th class="th-sm">Security Win</th>
                         <th class="th-sm">Average Time</th>
-                        <th class="th-sm">Rating System Deviation</th>
+                        <th class="th-sm">Rating System Deviation*</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,6 +55,9 @@
                 </tbody>
             </table>
         </div>
+        <p>
+            <i>*Rating System Deviation:</i> Percentage difference between the ratio of correctly predicted games by the rating system, to the average confidence of those predictions. For example: 10 games played, 6 games correctly predicted based on ratings with an average confidence of 50% is +20% deviation. 
+        </p>
         {% include 'footer.html' %}
     </body>
 </html>
