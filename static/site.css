@@ -247,3 +247,6 @@ body{
         margin-right: 2.5%;
     }
 }
+.hover-to-75:hover{
+	opacity: 0.75;
+}
