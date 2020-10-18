@@ -15,3 +15,4 @@ static/bootstrap/
 static/moment.js
 *.exe
 *.sqlite
+*.png
