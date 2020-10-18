@@ -35,11 +35,15 @@ class MapSummary:
         try:
             self.insurgentWinPercent = self.insurgentWins / self.totalGames*100
             self.securityWinPercent = self.securityWins / self.totalGames*100
-            predictionPercision = 1 - sum(self.predictions)/len(self.predictions)
-            confidenceAverage = sum(self.confidence) / len(self.confidence)
             averageSeconds = sum([t.total_seconds() for t  in self.times]) / len(self.times)
             self.averageTime = datetime.timedelta(seconds=int(averageSeconds))
-            self.ratingSystemDeviation = predictionPercision*100 - confidenceAverage
+
+            mapper = [ 1 if x == 0 else -1 for x in self.predictions ]
+            self.ratingSystemDeviation = 0
+            for i in range(0, len(self.confidence)):
+                self.ratingSystemDeviation += mapper[i] * self.confidence[i]
+            self.ratingSystemDeviation /= self.totalGames
+
         except ZeroDivisionError:
             pass
 
