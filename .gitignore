@@ -14,3 +14,4 @@ configparse_wrapper/
 static/bootstrap/
 static/moment.js
 *.exe
+*.sqlite
