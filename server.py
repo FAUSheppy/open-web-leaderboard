@@ -29,6 +29,23 @@ def prettifyMinMaxY(computedMin, computedMax):
     else:
         return (computedMin - 100, 4000)
 
+#@app.route("/live-games")
+#def singleRound():
+#    '''Display info current games'''
+#
+#    response = requests.get("")
+#    jsonDict = response.json
+#    for p in jsonDict["players"]:
+#        ..
+#        ..
+#
+#    get balance
+#    r.winners = sorted(r.winners, key=lambda p: p.participation, reverse=True)
+#    r.losers = sorted(r.losers, key=lambda p: p.participation, reverse=True)
+#
+#    return flask.render_template("single_round.html", r=r) 
+
+
 @app.route("/round-info")
 def singleRound():
     '''Display info about a single round itdentified by it's timestamp'''
