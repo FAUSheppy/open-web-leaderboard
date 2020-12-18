@@ -27,8 +27,8 @@ if(targetPlayer){
     /* scrollIntoView broken on android?? wtf */
     scrollOptions = {beahviour: "smooth", block:"center"} 
     targetPlayer.scrollIntoView(scrollOptions);
-    targetPlayer.style.background = "green";
-    targetPlayer.children.forEach(c => c.style.borderColor="green")
+    targetPlayer.style.background = "#56a456a3";
+    targetPlayer.children.forEach(c => c.style.borderColor="#56a456a3")
 }
 
 /* alert on mobile devices if player was not found */
