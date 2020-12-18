@@ -66,6 +66,11 @@ def maps():
         roundsWithMap = list(filter(lambda r: r.mapName == mapName , rounds))
         maps += [MapSummary.MapSummary(roundsWithMap)]
 
+    allMaps = MapSummary.MapSummary(rounds)
+    allMaps.mapName = "All Maps*"
+    maps += [allMaps]
+    
+
     mapsFiltered = filter(lambda x: x.mapName, maps)
     return flask.render_template("maps.html", maps=mapsFiltered)
 

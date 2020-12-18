@@ -18,6 +18,7 @@ class PlayerInLeaderboard:
         self.mu         = mu
         self.sigma      = sigma
         self.rating     = int(self.mu) - 2*int(self.sigma)
+        self.ratingStr  = str(self.rating) 
         self.games      = int(games)
         self.wins       = int(wins)
         self.loses      = self.games - self.wins

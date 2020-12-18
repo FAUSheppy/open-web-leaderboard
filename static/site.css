@@ -250,3 +250,11 @@ body{
 .hover-to-75:hover{
 	opacity: 0.75;
 }
+.patreon{
+	background: #d71d1d;
+	padding-left: 0.5vw;
+	padding-right: 0.5vw;
+	border-radius: 10px;
+	font-style: italic;
+	font-weight: bold;
+}

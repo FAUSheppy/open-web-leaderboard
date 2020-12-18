@@ -22,11 +22,13 @@ if(isLastPage){
 }
 
 /* if request was a playersearch, move to player */
-targetPlayerElements = document.getElementsByClassName("targetPlayer")
-if(targetPlayerElements.length == 1){
+targetPlayer = document.getElementById("targetPlayer")
+if(targetPlayer){
     /* scrollIntoView broken on android?? wtf */
     scrollOptions = {beahviour: "smooth", block:"center"} 
-    targetPlayerElements[0].scrollIntoView(scrollOptions);
+    targetPlayer.scrollIntoView(scrollOptions);
+    targetPlayer.style.background = "green";
+    targetPlayer.children.forEach(c => c.style.borderColor="green")
 }
 
 /* alert on mobile devices if player was not found */

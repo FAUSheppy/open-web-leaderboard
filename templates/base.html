@@ -6,27 +6,35 @@
         <script src="static/buttons.js" defer></script>
         {% include "default_head_content.html" %}
     </head>
-    <body>
+    <body class="bg-special">
         {% include 'navbar_leaderboard.html' %}
-        <div class="container mt-3 mb-3" role="main">
-            <div class=colum-names>{{ columNames }}</div>
-            {% for player in playerList %}
-                {% set count = loop.index + start %}
-                {% if count % 2 == 0 %}
-                <div class="line-even {% if searchName == player.name %}targetPlayer{% endif %}">
-                    <a href="/player?id={{ player.playerId }}">
-                    {{ player.getLineHTML(count) }}
-                    </a>
-                </div>
-                {% else %}
-                <div class="line-odd {% if searchName == player.name %}targetPlayer{% endif %}">
-                    <a href="/player?id={{ player.playerId }}">
-                    {{ player.getLineHTML(count) }}
-                    </a>
-                </div>
-                {% endif %}
-            {% endfor %}
-            {{ endOfBoardIndicator }}
+
+	<div class="container mt-3 mb-3" role="main">
+            <table id="tableMain" class="table table-striped table-bordered table-sm"
+                    cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th class="th-sm font-weight-bold">Rank</th>
+                        <th class="th-sm font-weight-bold">Player</th>
+                        <th class="th-sm font-weight-bold">Games</th>
+                        <th class="th-sm font-weight-bold">Rating</th>
+                        <th class="th-sm font-weight-bold">Winratio %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in playerList %}
+                    {% set count = loop.index + start %}
+                    <tr {% if searchName and searchName == p.name %} id="targetPlayer" {% endif %}>
+                       <td>{{ count }}</td>
+                       <td><a href="/player?id={{ p.playerId }}">{{ p.name }}</a></td>
+                       <td>{{ p.games }}</td>
+                       <td>{{ p.rating }}</td>
+                       <td>{{ p.winratio }}%</td>
+		    </tr>
+		    {% endfor %}
+                </tbody>
+            </table>    
+	    {{ endOfBoardIndicator }}
         </div>
     {% include 'footer.html' %}
     </body>

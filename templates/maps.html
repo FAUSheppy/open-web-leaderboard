@@ -3,24 +3,7 @@
     <head>
         <title>Maps</title>
         <meta name="Description" content="Insurgency Map Overview">
-        <link rel="stylesheet" type="text/css" href="/static/site.css">
-        <link rel="shortcut icon" href="/static/defaultFavicon.ico">
-
-        <!-- needed for @media-css mofiers -->
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-        <!-- Bootstrap core CSS -->
-        <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Material Design Bootstrap -->
-        <link href="static/bootstrap/css/mdb.min.css" rel="stylesheet">
-
-        <script src="static/bootstrap/js/jquery.js"></script>
-        <script src="static/bootstrap/js/popper.js"></script>
-        <script src="static/bootstrap/js/bootstrap.js"></script>
-        <script src="static/bootstrap/js/mdb.min.js"></script>
-
+	{% include "default_head_content.html" %}
     </head>
     <body class="bg-special">
         {% include 'navbar.html' %}
@@ -34,34 +17,50 @@
                         <th class="th-sm font-weight-bold">Insurgent Win</th>
                         <th class="th-sm font-weight-bold">Security Win</th>
                         <th class="th-sm font-weight-bold">Average Time</th>
-                        <th class="th-sm font-weight-bold">Rating System Deviation*</th>
+                        <th class="th-sm font-weight-bold">Rating System Performance</th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for m in maps %}
-		    <tr {% if m.totalGames < 20 %} style="opacity: 0.4;" {% endif %}>
+		    <tr>
                        <td>{{ m.mapName }}</td>
                        <td>{{ m.totalGames }}</td>
                        <td>{{ '%0.2f' | format(m.insurgentWinPercent) }}%</td>
                        <td>{{ '%0.2f' | format(m.securityWinPercent) }}%</td>
                        <td>{{ m.averageTime }}</td>
-                       {% if m.ratingSystemDeviation >= 0 %}
-                       <td style="color: green;">+{{ '%0.2f' | format(m.ratingSystemDeviation) }}%
+		       {% if m.ratingSystemDeviation == 0 or m.predictionCorrectPercentage == 0%}
+                       <td style="color: grey;">N/A</td>
+                       {% elif m.ratingSystemDeviation >= 0 %}
+                       <td style="color: green;">
+			   +{{ '%0.2f' | format(m.ratingSystemDeviation) }}%
+			   ({{ m.predictionCorrectPercentage }}% Correct)
                        </td>
                        {% else %}
-                       <td style="color: red;">{{ '%0.2f' | format(m.ratingSystemDeviation) }}%
+                       <td style="color: red;">
+                           {{ '%0.2f' | format(m.ratingSystemDeviation) }}%
+			   ({{ m.predictionCorrectPercentage }}% Correct)
                        </td>
                        {% endif %}
                     </tr>
+		    {# <!--
+			{{ m.confidence }}
+			{{ m.predictions }}
+		    --> #}
                 {% endfor %}
                 </tbody>
             </table>
-	  <div class="mt-2 mb-2">
-            <p>
-                <i>*Rating System Deviation:</i> Percentage difference between the ratio of correctly predicted games by the rating system, to the average confidence of those predictions. For example: 10 games played, 6 games correctly predicted based on ratings with an average confidence of 50% is +20% deviation. 
-            </p>
+	  <div class="mt-2 pt-3 mb-2">
+		<small>
+		   *Map Tracking was only implemented recently, that is why there are many rounds without a recorded mapname.
+		</small>
 	  </div>
         </div>
         {% include 'footer.html' %}
+        <script defer>
+            $(document).ready(function () {
+                $('#tableMain').DataTable();
+                $('.dataTables_length').addClass('bs-select');
+            });
+        </script>
     </body>
 </html>
