@@ -96,17 +96,21 @@ class DatabaseConnection:
         playerNamePrepared = "%{}%".format(playerName.replace("%", "%%"))
         cursor.execute("SELECT * FROM players WHERE name == ?", (playerName,))
         row = cursor.fetchone()
+
+        # if there is exactly one hit for the exact name just return that #
+        if row and not cursor.fetchone():
+            p = player.PlayerInLeaderboard(row)
+            p.rank = self.getPlayerRank(p)
+            return [p]
+
+        playerRows = []
+        cursor.execute("SELECT * FROM players WHERE name LIKE ?", (playerNamePrepared,))
+        for pr in cursor:
+            p = player.PlayerInLeaderboard(pr)
+            p.rank = self.getPlayerRank(p)
+            playerRows += [p]
     
-        playerRow = None
-        if not playerRow:
-            cursor.execute("SELECT * FROM players WHERE name LIKE ?", (playerNamePrepared,))
-            playerRow = cursor.fetchone()
-            if not playerRow:
-                return None
-    
-        playerInLeaderboard = player.PlayerInLeaderboard(playerRow)
-        playerInLeaderboard.rank = self.getPlayerRank(playerInLeaderboard)
-        return playerInLeaderboard
+        return playerRows
 
     def getPlayerRank(self, player):
         '''Calculate player rank - a player rank may change rapidly and 

@@ -180,37 +180,42 @@ def leaderboard():
     cannotFindPlayer = ""
     searchName = ""
 
+    playerList = None
+    doNotComputeRank = True
     if playerName:
-        playerInLeaderboard = db.findPlayerByName(playerName)
-        if not playerInLeaderboard:
+        playersInLeaderboard = db.findPlayerByName(playerName)
+        if not playersInLeaderboard:
             cannotFindPlayer = flask.Markup("<div class=noPlayerFound>No player of that name</div>")
             start = 0
         else:
-            rank = playerInLeaderboard.rank
-            if(playerInLeaderboard.games < 10):
-                return flask.redirect("/player?id={}".format(playerInLeaderboard.playerId))
-            searchName = playerInLeaderboard.name
-            start = rank - (rank % SEGMENT)
+            if len(playersInLeaderboard) == 1:
+                rank = playersInLeaderboard[0].rank
+                if(playersInLeaderboard[0].games < 10):
+                    return flask.redirect("/player?id={}".format(playersInLeaderboard[0].playerId))
+                searchName = playersInLeaderboard[0].name
+                start = rank - (rank % SEGMENT)
+            else:
+                playerList = playersInLeaderboard
+                for p in playerList:
+                    if p.rank == -1:
+                        p.rankStr = "N/A"
+                    else:
+                        p.rankStr = str(p.rank)
+                doNotComputeRank = False
 
-    end = start + SEGMENT
-
-
-    # compute range #
-    maxEntry = db.getTotalPlayers()
     reachedEnd = False
-    if end > maxEntry:
-        start = maxEntry - ( maxEntry % SEGMENT ) - 1
-        end   = maxEntry - 1
-        reachedEnd = True
+    maxEntry = 0
+    if not playerList:            
+        # compute range #
+        end = start + SEGMENT
+        maxEntry = db.getTotalPlayers()
+        reachedEnd = False
+        if end > maxEntry:
+            start = maxEntry - ( maxEntry % SEGMENT ) - 1
+            end   = maxEntry - 1
+            reachedEnd = True
 
-    playerList = db.getRankRange(start, end)
-
-    columContent = flask.Markup(flask.render_template("playerLine.html", \
-                                        playerRank="Rank", \
-                                        playerName="Player", \
-                                        playerRating="Rating", \
-                                        playerGames="Games", \
-                                        playerWinratio="Winratio"))
+        playerList = db.getRankRange(start, end)
     
     endOfBoardIndicator = ""
     if reachedEnd:
@@ -222,7 +227,7 @@ def leaderboard():
         start = max(start, 0)
     
     finalResponse = flask.render_template("base.html", playerList=playerList, \
-                                                        columNames=columContent, \
+                                                        doNotComputeRank=doNotComputeRank, \
                                                         start=start, \
                                                         endOfBoardIndicator=endOfBoardIndicator, \
                                                         findPlayer=cannotFindPlayer, \

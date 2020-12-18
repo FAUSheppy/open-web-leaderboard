@@ -25,7 +25,7 @@
                     {% for p in playerList %}
                     {% set count = loop.index + start %}
                     <tr {% if searchName and searchName == p.name %} id="targetPlayer" {% endif %}>
-                       <td>{{ count }}</td>
+                       <td>{% if doNotComputeRank %} {{ count }} {% else %} {{ p.rankStr }} {% endif %}</td>
                        <td><a href="/player?id={{ p.playerId }}">{{ p.name }}</a></td>
                        <td>{{ p.games }}</td>
                        <td>{{ p.rating }}</td>
