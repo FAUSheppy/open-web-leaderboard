@@ -104,11 +104,15 @@ class DatabaseConnection:
             return [p]
 
         playerRows = []
-        cursor.execute("SELECT * FROM players WHERE name LIKE ?", (playerNamePrepared,))
+        cursor.execute("SELECT * FROM players WHERE name LIKE ? ORDER BY games DESC", (playerNamePrepared,))
+        count = 0
         for pr in cursor:
+            if count > 50:
+                break;
             p = player.PlayerInLeaderboard(pr)
             p.rank = self.getPlayerRank(p)
             playerRows += [p]
+            count += 1
     
         return playerRows
 

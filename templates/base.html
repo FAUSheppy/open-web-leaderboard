@@ -36,6 +36,14 @@
             </table>    
 	    {{ endOfBoardIndicator }}
         </div>
-    {% include 'footer.html' %}
+        {% if not doNotComputeRank %}
+        <script defer>
+            $(document).ready(function () {
+                $('#tableMain').DataTable();
+                $('.dataTables_length').addClass('bs-select');
+            });
+        </script>
+        {% endif }
+        {% include 'footer.html' %}
     </body>
 </html>
