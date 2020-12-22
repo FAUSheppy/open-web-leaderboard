@@ -19,16 +19,10 @@
             
             <div class="row">
                 <div class="col-sm">
-                    <h1>Tracking ID {{ r.id }}</h1>
-                    <h4>{{ r.startTime }}</h4>
+                    <h4>Tracking ID {{ r.id }}</h1>
+                    <h2>{{ r.startTime }}</h4>
                     <h4>Map: {{ r.mapName }}</h4>
                     <h4>Duration: {{ r.duration }}</h4>
-
-                    {% if r.invalid %}
-                    <div>
-                        <h5 style="color: red;">{{ r.invalid | safe }}</h5>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
             
@@ -41,7 +35,28 @@
                     <h5>Security</h5>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-sm">
+                    <div class="row">
+                        <div class="col-sm">
+                            <h6>Name</h6>
+                        </div>
+                        <div class="col-sm">
+                            <h6>Rating</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="row">
+                        <div class="col-sm">
+                            <h6>Name</h6>
+                        </div>
+                        <div class="col-sm">
+                            <h6>Rating</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-sm">
 		    {# WINNERS == INSURGENT for livegames #}
@@ -51,11 +66,7 @@
                             <a href="/player?id={{ p.playerId }}">{{ p.name }}</a>
                         </div>
                         <div class="col-sm">
-                            {% if not r.invalid %}
-                            <small style="color: green;">
-                                {{ p.ratingChangeString | safe }}
-                            </small>
-                            {% endif %}
+                            {{ p.rating }}
                         </div>
                     </div>
                     {% endfor %}
@@ -68,14 +79,7 @@
                             <a href="/player?id={{ p.playerId }}">{{ p.name }}</a>
                         </div>
                         <div class="col-sm">
-                            {{ p.participation }}%
-                        </div>
-                        <div class="col-sm">
-                            {% if not r.invalid %}
-                            <small style="color: red;">
-                                {{ p.ratingChangeString | safe }}
-                            </small>
-                            {% endif %}
+                            {{ p.rating }}
                         </div>
                     </div>
                     {% endfor %}

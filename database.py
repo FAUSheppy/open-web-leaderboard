@@ -134,8 +134,8 @@ class DatabaseConnection:
         '''Get current live games'''
 
         cursor = self.connPlayers.cursor()
-        cursor.execute('''SELECT * FROM live WHERE time > ? LIMIT 2''', 
-            (datetime.datetime.now().timestamp(),))
+        cursor.execute('''SELECT * FROM live WHERE time > ? ORDER BY time DESC LIMIT 2''',  (
+            (datetime.datetime.now() - datetime.timedelta(minutes=100)).timestamp(),))
         
         liveRounds = []
         for row in cursor:
@@ -150,8 +150,10 @@ class DatabaseConnection:
                     security += [p]
                 p.update({"active_time":-1})
 
-            dbRow = [time, json.dumps(insurgent), json.loads(security), "N/A", 0, 0 ,0]
-            r = Round.Round(row)
+            dbRow = [time, json.dumps(insurgent), json.dumps(security), -1, "N/A", duration, 0 ,0]
+            r = Round.Round(dbRow)
+            r.winners = [ self.getPlayerById(p.playerId) for p in r.winners]
+            r.losers  = [ self.getPlayerById(p.playerId) for p in r.losers]
             r.id = trackingID
             liveRounds += [r]
 
