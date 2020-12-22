@@ -18,6 +18,11 @@
         <li class="nav-item">
             <a id="button-forward" class="nav-link" href="/?page={{ nextPageNumber }}">Forward</a>
         </li>
+        <li class="nav-item" {% if not gameInProgress %} style="opacity: 0.5" {% endif %}>
+            <a id="button-forward" class="nav-link" href="/livegames">Livegames
+            <div style="font-size: small; color: red; opacity: 1; float: right; margin-left: 10px;">(experimental)</div>
+            </a>
+        </li>
       </ul>
       <ul class="navbar-nav">
         <li class="nav-item">

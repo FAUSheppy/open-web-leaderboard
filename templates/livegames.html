@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Live Round</title>
+        <meta name="Description" content="Insurgency games played on the AtlantisHQ">
+	    <meta name="robots" content="noarchive">
+        {% include 'default_head_content.html' %}
+    </head>
+    <body class="bg-special">
+        {% include 'navbar.html' %}
+        {% if noRounds %}
+	        <h1 class="m-5 alert alert-warning text-center">
+	        	No game currently detected as in progress :(
+	        </h1>
+	    {% endif %}
+		
+        {% for r in liveGameRounds %}
+        <div class="container mt-3 mb-3" role="main">
+            
+            <div class="row">
+                <div class="col-sm">
+                    <h1>Tracking ID {{ r.id }}</h1>
+                    <h4>{{ r.startTime }}</h4>
+                    <h4>Map: {{ r.mapName }}</h4>
+                    <h4>Duration: {{ r.duration }}</h4>
+
+                    {% if r.invalid %}
+                    <div>
+                        <h5 style="color: red;">{{ r.invalid | safe }}</h5>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <hr>
+            <div class="row">
+                <div class="col-sm">
+                    <h5>Insurgency</h5>
+                </div>
+                <div class="col-sm">
+                    <h5>Security</h5>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm">
+		    {# WINNERS == INSURGENT for livegames #}
+                    {% for p in r["winners"] %}
+                    <div class="row">
+                        <div class="col-sm" style="overflow: hidden;">
+                            <a href="/player?id={{ p.playerId }}">{{ p.name }}</a>
+                        </div>
+                        <div class="col-sm">
+                            {% if not r.invalid %}
+                            <small style="color: green;">
+                                {{ p.ratingChangeString | safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="col-sm">
+		    {# LOSER == SECURITY for livegames #}
+                    {% for p in r["losers"] %}
+                    <div class="row">
+                        <div class="col-sm" style="overflow: hidden;">
+                            <a href="/player?id={{ p.playerId }}">{{ p.name }}</a>
+                        </div>
+                        <div class="col-sm">
+                            {{ p.participation }}%
+                        </div>
+                        <div class="col-sm">
+                            {% if not r.invalid %}
+                            <small style="color: red;">
+                                {{ p.ratingChangeString | safe }}
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <hr>
+	<div class="mt-5">
+	</div>
+        {% endfor %}
+        {% include 'footer.html' %}
+    </body>
+</html>

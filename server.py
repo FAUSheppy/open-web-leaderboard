@@ -52,6 +52,14 @@ def singleRound():
 
     return flask.render_template("single_round.html", r=r) 
 
+@app.route("/livegames")
+def liveGames():
+    '''Display info about a single round itdentified by it's timestamp'''
+
+    db = DatabaseConnection(app.config["DB_PATH"])
+    rounds = db.getLiveGames()
+    return flask.render_template("livegames.html", liveGameRounds=rounds, noRounds=not bool(rounds))
+
 @app.route("/maps")
 def maps():
     '''Show an overview of maps'''

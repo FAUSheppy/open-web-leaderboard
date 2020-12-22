@@ -130,6 +130,33 @@ class DatabaseConnection:
         rank = cursor.fetchone()[0]
         return rank
 
+    def getLiveGames(self):
+        '''Get current live games'''
+
+        cursor = self.connPlayers.cursor()
+        cursor.execute('''SELECT * FROM live WHERE time > ? LIMIT 2''', 
+            (datetime.datetime.now().timestamp(),))
+        
+        liveRounds = []
+        for row in cursor:
+            trackingID, time, duration, players = row
+            insurgent = [] #2
+            security = [] #3
+
+            for p in json.loads(players):
+                if p["team"] == 2:
+                    insurgent += [p]
+                elif p["team"] == 3:
+                    security += [p]
+                p.update({"active_time":-1})
+
+            dbRow = [time, json.dumps(insurgent), json.loads(security), "N/A", 0, 0 ,0]
+            r = Round.Round(row)
+            r.id = trackingID
+            liveRounds += [r]
+
+        return liveRounds
+
     def roundsBetweenDates(self, start, end):
         '''Get rounds played between two times'''
 
