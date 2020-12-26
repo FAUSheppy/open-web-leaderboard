@@ -46,7 +46,9 @@
         </div>
         <script defer>
             $(document).ready(function () {
-                $('#tableMain').DataTable();
+                $('#tableMain').DataTable({
+                    "order" : [[ 6, "desc" ]]
+                });
                 $('.dataTables_length').addClass('bs-select');
             });
         </script>
