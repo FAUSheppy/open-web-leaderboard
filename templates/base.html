@@ -12,17 +12,21 @@
         <div class="container mt-3 mb-3" role="main">
             <div id="playerDisplay" class="playerDisplay mb-3 mt-2">
                 <script>
-                    fetch("/players-online").then(
-                            response => response.json()
-                        ).then(
-                            data => { 
-                                if(data["error"] == ""){
-                                    document.getElementById("playerDisplay").innerHTML = "Players Online: " + data["player_total"]
-                                }else{
-                                    document.getElementById("playerDisplay").innerHTML = "Players Online: (error)" + data["error"]
+                    function players(){
+                        fetch("/players-online").then(
+                                response => response.json()
+                            ).then(
+                                data => {
+                                    if(data["error"] == ""){
+                                        document.getElementById("playerDisplay").innerHTML = "Players Online: " + data["player_total"]
+                                    }else{
+                                        document.getElementById("playerDisplay").innerHTML = "Players Online: (error)" + data["error"]
+                                    }
                                 }
-                            }
-                        )
+                            )
+                    }
+                    players()
+                    setInterval(players, 2000)
                 </script>
             </div>
             <table id="tableMain" class="table table-striped table-bordered table-sm"
