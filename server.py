@@ -9,6 +9,8 @@ import os
 import MapSummary
 
 from database import DatabaseConnection
+import valve.source.a2s
+from valve.source import NoResponseError
 
 
 app = flask.Flask("open-leaderboard")
@@ -39,7 +41,7 @@ def playersOnline():
 
     for s in SERVERS:
         try:
-            with valve.source.a2s.ServerQuerier((args.host, args.port)) as server:
+            with valve.source.a2s.ServerQuerier((s["host"], s["port"])) as server:
                 playerTotal += int(server.info()["player_count"])
         except NoResponseError:
             error = "Server Unreachable"
@@ -274,10 +276,10 @@ def send_js(path):
 
 @app.before_first_request
 def init():
+    global SERVERS
+
     SERVERS_FILE = "servers.json"
     if os.path.isfile(SERVERS_FILE):
-        import valve.source.a2s
-        from valve.source import NoResponseError
         with open(SERVERS_FILE) as f:
             SERVERS = json.load(f)
 
