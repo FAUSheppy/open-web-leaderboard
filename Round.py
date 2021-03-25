@@ -24,7 +24,8 @@ class Round:
         blacklistNames = []
         blacklistFile  = "blacklist.json"
         if os.path.isfile(blacklistFile):
-            blacklistNames = json.load(blacklistFile)["blacklist"]
+            with open(blacklistFile) as f:
+                blacklistNames = json.load(f)["blacklist"]
 
         for name in blacklistNames:
             for p in self.winners:
