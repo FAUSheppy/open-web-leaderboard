@@ -20,6 +20,7 @@ cache = fcache.Cache(app, config={'CACHE_TYPE': 'simple'})
 cache.init_app(app)
 
 SEGMENT=100
+SERVERS=list()
 
 
 
@@ -28,6 +29,27 @@ def prettifyMinMaxY(computedMin, computedMax):
         return (0, 4000)
     else:
         return (computedMin - 100, 4000)
+
+@app.route("/players-online")
+def playersOnline():
+    '''Calc and return the online players'''
+
+    playerTotal = 0
+    error       = ""
+
+    for s in SERVERS:
+        try:
+            with valve.source.a2s.ServerQuerier((args.host, args.port)) as server:
+                playerTotal += int(server.info()["player_count"])
+        except NoResponseError:
+            error = "Server Unreachable"
+        except Exception as e:
+            error = str(e)
+
+    retDict = { "player_total" : playerTotal, "error" : error }
+    return flask.Response(json.dumps(retDict), 200, mimetype='application/json')
+            
+    
 
 @app.route("/round-info")
 def singleRound():
@@ -252,7 +274,12 @@ def send_js(path):
 
 @app.before_first_request
 def init():
-    pass
+    SERVERS_FILE = "servers.json"
+    if os.path.isfile(SERVERS_FILE):
+        import valve.source.a2s
+        from valve.source import NoResponseError
+        with open(SERVERS_FILE) as f:
+            SERVERS = json.load(f)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Start open-leaderboard', \

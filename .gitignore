@@ -17,3 +17,4 @@ static/moment.js
 *.sqlite
 *.png
 blacklist.json
+servers.json

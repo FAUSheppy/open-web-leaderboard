@@ -32,6 +32,22 @@ Players can be blacklisted by name via a *blacklist.json* file in the project ro
         "blacklist" : ["name", "name_2"]
     }
 
+# Adding servers for player count live info
+Source-Servers can be added via the *servers.json*-file:
+
+    [
+        {
+            "name" : "server_1",
+            "host" : "example.com",
+            "port" : 27015
+        },
+        {
+            ...
+        }
+    ]
+    
+*Python-valve* is required if this file exists.
+
 # Preview
 ![open-web-leaderboard](https://media.atlantishq.de/leaderboard-github-picture.png)
 
