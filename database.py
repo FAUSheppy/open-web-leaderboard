@@ -135,7 +135,7 @@ class DatabaseConnection:
 
         cursor = self.connPlayers.cursor()
         cursor.execute('''SELECT * FROM live WHERE time > ? ORDER BY time DESC LIMIT 2''',  (
-            (datetime.datetime.now() - datetime.timedelta(minutes=100)).timestamp(),))
+            (datetime.datetime.now() - datetime.timedelta(minutes=40)).timestamp(),))
         
         liveRounds = []
         for row in cursor:
