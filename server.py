@@ -42,6 +42,8 @@ def singleRound():
     r = db.getRoundByTimestamp(timestamp)
     if not r:
         return ("Round not found", 404)
+    elif r.blacklist:
+        return ("Unavailable due to pending GDPR deletion request", 451)
     r = db.calcRatingChanges(r)
 
     if not r:

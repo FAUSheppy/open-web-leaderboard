@@ -16,3 +16,4 @@ static/moment.js
 *.exe
 *.sqlite
 *.png
+blacklist.json

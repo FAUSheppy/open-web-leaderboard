@@ -1,6 +1,8 @@
 import json
 import datetime
 import player
+import json
+import os
 
 class Round:
     def __init__(self, dbRow):
@@ -17,6 +19,21 @@ class Round:
         self.losers =  [ player.playerFromDict(lp, int(duration)) for lp in losersParsed  ]
         self.winnerSide = winnerSide
         self.duration = datetime.timedelta(seconds=int(duration))
+
+        self.blacklist = False
+        blacklistNames = []
+        blacklistFile  = "blacklist.json"
+        if os.path.isfile(blacklistFile):
+            blacklistNames = json.load(blacklistFile)["blacklist"]
+
+        for name in blacklistNames:
+            for p in self.winners:
+                if p.name == name:
+                    self.blacklist = True
+            for p in self.losers:
+                if p.name == name:
+                    self.blacklist = True
+
 
         if winnerSide == 2:
             self.winnerSideString = "Security"

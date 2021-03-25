@@ -25,6 +25,13 @@ or with a runner like *waitress*:
 
 the *DB_PATH* is set in *config.py* in this case.
 
+# GDPR: Blacklisting players
+Players can be blacklisted by name via a *blacklist.json* file in the project root.
+
+    {
+        "blacklist" : ["name", "name_2"]
+    }
+
 # Preview
 ![open-web-leaderboard](https://media.atlantishq.de/leaderboard-github-picture.png)
 
