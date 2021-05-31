@@ -48,8 +48,5 @@ Source-Servers can be added via the *servers.json*-file:
     
 *Python-valve* is required if this file exists.
 
-# Preview
-![open-web-leaderboard](https://media.atlantishq.de/leaderboard-github-picture.png)
-
 # Live Demo
 [insurgency.atlantishq.de](https://insurgency.atlantishq.de)
