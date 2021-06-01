@@ -31,7 +31,7 @@ class DatabaseConnection:
         '''Get the total number of players in the database'''
 
         cursor = self.connPlayers.cursor()
-        cursor.execute("SELECT Count(*) FROM players where games >= 10 and not lastgame is null")
+        cursor.execute("SELECT Count(*) FROM players")
         count = cursor.fetchone()[0]
         return count
 
@@ -79,8 +79,8 @@ class DatabaseConnection:
     
         cursor = self.connPlayers.cursor()
         limit = end - start
-        sqlQuery = '''Select * FROM players where games >= 10
-                        and not lastgame is null
+        print(limit, start)
+        sqlQuery = '''Select * FROM players where games >= 1
                         ORDER BY (mu - 2*sigma) DESC LIMIT ? OFFSET ?'''
         cursor.execute(sqlQuery, (limit, start))
         rows = cursor.fetchall()
@@ -121,11 +121,8 @@ class DatabaseConnection:
             can't and shouldn't be used to identify a player'''
     
         cursor = self.connPlayers.cursor()
-        if(player.games < 10):
-            return -1
-        cursor.execute('''SELECT COUNT(*) from players where games >= 10 
-                            and not lastgame is null
-                            and (mu-2*sigma) > (?-2*?);''',
+        cursor.execute('''SELECT COUNT(*) from players
+                            where (mu-2*sigma) > (?-2*?);''',
                             (player.mu, player.sigma))
         rank = cursor.fetchone()[0]
         return rank
@@ -181,9 +178,9 @@ class DatabaseConnection:
                                 WHERE timestamp < ? AND id = ?''',
                                 (roundObj.startTime.timestamp(), p.playerId))
 
-            if(cursorHist.fetchone()[0] < 10):
-                p.ratingChangeString = "Placements"
-                continue
+            #if(cursorHist.fetchone()[0] < 10):
+            #    p.ratingChangeString = "Placements"
+            #    continue
 
             cursorHist.execute('''SELECT mu,sima FROM playerHistoricalData 
                                 WHERE timestamp < ? AND id = ? order by timestamp DESC LIMIT 1 ''',

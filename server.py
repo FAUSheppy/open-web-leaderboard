@@ -245,6 +245,7 @@ def leaderboard():
         if end > maxEntry:
             start = maxEntry - ( maxEntry % SEGMENT ) - 1
             end   = maxEntry - 1
+            print(maxEntry)
             reachedEnd = True
 
         playerList = db.getRankRange(start, end)

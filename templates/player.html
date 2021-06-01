@@ -14,13 +14,7 @@
                 </h1>
                 <h3>
                     Rating: <i>{{ player.rating }}</i> <br>
-                    {% if player.rank == 0 %}
-                        <i><small>Missing {{ 10 - player.games }} placement games!</small></i>
-                    {% elif not player.lastGame %}
-                        <i><small>Must play a game again before being assigned a rank!</small></i>
-                    {% else %}
-                        Rank: {{ player.rank }}
-                    {%endif%}
+                    Rank: {{ player.rank }}
                 </h3>
             </div>
             <div class="plot-container">

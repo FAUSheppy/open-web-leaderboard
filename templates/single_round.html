@@ -42,9 +42,6 @@
                             <a href="/player?id={{ p.playerId }}">{{ p.name }}</a>
                         </div>
                         <div class="col-sm">
-                            {{ p.participation }}%
-                        </div>
-                        <div class="col-sm">
                             {% if not r.invalid %}
                             <small style="color: green;">
                                 {{ p.ratingChangeString | safe }}
@@ -59,9 +56,6 @@
                     <div class="row">
                         <div class="col-sm" style="overflow: hidden;">
                             <a href="/player?id={{ p.playerId }}">{{ p.name }}</a>
-                        </div>
-                        <div class="col-sm">
-                            {{ p.participation }}%
                         </div>
                         <div class="col-sm">
                             {% if not r.invalid %}

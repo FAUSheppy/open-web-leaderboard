@@ -36,12 +36,12 @@ class Round:
                     self.blacklist = True
 
 
-        if winnerSide == 2:
-            self.winnerSideString = "Security"
-            self.loserSideString = "Insurgent"
+        if winnerSide == 1:
+            self.winnerSideString = "Red"
+            self.loserSideString = "Blue"
         else:
-            self.winnerSideString = "Insurgent"
-            self.loserSideString = "Security"
+            self.winnerSideString = "Blue"
+            self.loserSideString = "Red"
         if mapName:
             self.mapName = mapName
         else:
