@@ -76,7 +76,6 @@ function fastPosChanged() {
 	}
 
 	/* allow some basic shit */
-	console.log(clean)
 	if(clean == "*" || clean == ""){
 		console.log("lol")
 		retVal = true
@@ -166,7 +165,6 @@ function balance(){
 	}
 
 	jsonData = JSON.stringify(dictAll, null, 4);
-	console.log(jsonData)
 
 	/* transmitt */
 	fetch(window.location.href, {
@@ -176,8 +174,6 @@ function balance(){
     			'Content-Type': 'application/json' },
   		body: jsonData
 	}).then(r => r.json()).then(j => {
-		console.log(j)
-		console.log(j["content"])
 		cont = document.getElementById("response-container")
 		cont.innerHTML = j["content"]
 	})
