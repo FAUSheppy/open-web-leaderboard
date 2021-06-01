@@ -1,0 +1,17 @@
+	{% for x in range(5) %}
+	<div class="row">
+		{% set leftP  = d["left"][positions[x]] %}
+		{% set rightP = d["right"][positions[x]] %}
+		<div class="col-sm">
+			{{ positions[x] }}
+		</div>
+		<div class="col-sm" 
+			{% if requests[leftP][x] | int >= 4 %}style="background: red;"{% endif %}>
+			{{ leftP }}
+		</div>
+		<div class="col-sm"
+			{% if requests[rightP][x] | int >= 4 %}style="background: red;"{% endif %}>
+			{{ rightP }}
+		</div>
+	</div>
+	{% endfor %}
