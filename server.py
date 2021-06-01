@@ -133,9 +133,14 @@ def rounds():
     # display outcome
     # display map
 
-@app.route("/balance-tool")
+@app.route("/balance-tool", methods=['GET', 'POST'])
 def balanceTool():
-    return flask.render_template("json_builder.html", 
+    if flask.request.method == 'POST':
+        print(flask.request.json)
+        return flask.Response(json.dumps({"content":"<div>test</div>"}), 
+                    200, mimetype='application/json')
+    else:
+        return flask.render_template("json_builder.html", 
                                     positions=["Top", "Jungle", "Mid", "Support", "Bottom"],
                                     sides=["left", "right"])
 

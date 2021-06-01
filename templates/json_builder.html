@@ -15,10 +15,13 @@
 			<h1>Balance Tool</h1>
                 </div>
             </div>
+
+	    <button type="button" class="mb-3 btn btn-secondary" onclick="balance()">Go</button>
+
+            <div id="response-container" class="row mt-3 mb-3">
+            </div>
             
             <hr>
-            <div class="row">
-            </div>
 
             <div class="row">
 	    {% for side in sides %}
@@ -28,7 +31,7 @@
 			<div class="col-sm">
 
 				<!-- player name field -->
-				<input class="form-control" type="text" placeholder="Player"
+				<input class="form-control pname" type="text" placeholder="Player"
 					id="playername-{{ side }}-{{ field }}">
 					
 				<!-- fast postition slection field -->
