@@ -133,6 +133,12 @@ def rounds():
     # display outcome
     # display map
 
+@app.route("/balance-tool")
+def balanceTool():
+    return flask.render_template("json_builder.html", 
+                                    positions=["Top", "Jungle", "Mid", "Support", "Bottom"],
+                                    sides=["left", "right"])
+
 @app.route("/player")
 def player():
     '''Show Info about Player'''
@@ -295,4 +301,5 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     app.config["DB_PATH"] = args.skillbird_db
+    app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.run(host=args.interface, port=args.port)

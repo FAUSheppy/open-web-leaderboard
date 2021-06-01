@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Balance and Submission Tool</title>
+        <meta name="Description" content="Sheppy is awesome?">
+	<script defer src="/static/balance.js"></script>
+        {% include 'default_head_content.html' %}
+    </head>
+    <body class="bg-special">
+        {% include 'navbar.html' %}
+        <div class="container mt-3 mb-3" role="main">
+            
+            <div class="row">
+                <div class="col-sm">
+			<h1>Balance Tool</h1>
+                </div>
+            </div>
+            
+            <hr>
+            <div class="row">
+            </div>
+
+            <div class="row">
+	    {% for side in sides %}
+                <div class="col-sm">
+                    {% for field in range(5) %}
+                    <div id="{{ side }}-{{ field }}" class="row mt-2 mb-2">
+			<div class="col-sm">
+
+				<!-- player name field -->
+				<input class="form-control" type="text" placeholder="Player"
+					id="playername-{{ side }}-{{ field }}">
+					
+				<!-- fast postition slection field -->
+				<input class="form-control fastpos" type="text" 
+					placeholder="top > mid = bot"
+					id="check-{{ side }}-fastpos-{{ field }}">
+
+
+                        </div>
+			<div class="col-sm">
+				<!-- checkboxes for pos -->
+				{% for pos in positions %}
+				<select id="prio-{{ side }}-{{ pos }}-{{ field }}"
+					class="form-select">
+					<option selected>{{ pos }}</option>
+  					<option value="1">1</option>
+  					<option value="2">2</option>
+  					<option value="3">3</option>
+  					<option value="4">4</option>
+  					<option value="5">5</option>
+				</select>
+				{% endfor %}
+                        </div>
+                    </div>
+	    	    <hr>
+                    {% endfor %}
+                </div>
+	    {% endfor %}
+            </div>
+            <hr>
+        </div>
+        {% include 'footer.html' %}
+    </body>
+</html>
