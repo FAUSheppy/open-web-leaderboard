@@ -1,4 +1,5 @@
 positions = [ "Top", "Jungle", "Mid", "Support" , "Bottom" ]
+acceptedParser = [ "top", "jungle", "mid", "sup" , "bot", "adc", "support", "bottom" ]
 
 function checkPlayer() {
 	if(this.value == ""){
@@ -77,7 +78,6 @@ function fastPosChanged() {
 
 	/* allow some basic shit */
 	if(clean == "*" || clean == ""){
-		console.log("lol")
 		retVal = true
 	}
 
@@ -178,6 +178,57 @@ function balance(){
 		cont.innerHTML = j["content"]
 	})
 
+}
+
+function parseMultiline(){
+
+	var names = []
+	var prioStrings = []
+
+	field = document.getElementById("multi-line-copy")
+	lines = field.value.split("\n")
+	lines.forEach(l => {
+		
+		lowestIndex = 100
+
+		acceptedParser.forEach( p => {
+			i = l.indexOf(" " + p)
+			if(i > 3 && i < lowestIndex){
+				lowestIndex = i
+			}
+		})
+
+		if(lowestIndex != 100){
+			name = l.substring(0, lowestIndex)
+			prioStr = l.substring(lowestIndex)
+			names.push(name)
+			prioStrings.push(prioStr)
+		}
+	})
+
+	sides = [ "left", "right"]
+	count = 0
+	sides.forEach(s => {
+		for(i = 0; i<5; i++){
+
+			pObjField = document.getElementById("playername-" + s + "-" + i)
+			prObjField = document.getElementById("check-" + s + "-fastpos-" + i)
+
+			if(count >= names.length){
+				pObjField.value = ""
+				prObjField.value = ""
+			}else{
+				pObjField.value = names[count]
+				prObjField.value = prioStrings[count]
+			}
+
+			count++;
+		}
+	})
+
+	const focusEvent = new Event("focus")
+	fastPosFields.forEach(el => el.dispatchEvent(focusEvent))
+	balance()
 }
 
 fastPosFields = document.getElementsByClassName("fastpos")

@@ -23,6 +23,15 @@
             
             <hr>
 
+	    <textarea type="text" id="multi-line-copy" rows="10" 
+		placeholder="Have everybody write their roles in the form of 'top > mid = sup = jungle >adc' in the chat and then copy it in here and hit 'Use Multiline Input' :)" 
+		    class="form-control md-textarea"></textarea>
+	    <button type="button" class="mb-3 btn btn-secondary" onclick="parseMultiline()">
+	    	Use Multiline Input..
+	    </button>
+
+            <hr>
+
             <div class="row">
 	    {% for side in sides %}
                 <div class="col-sm">
