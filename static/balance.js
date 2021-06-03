@@ -123,44 +123,6 @@ function balance(){
 
 			dictAll[pname] = prioList
 
-			/* deal with one pos andys */
-			countPos = prioList.filter(a => a < 5).length
-			if(countPos == 1){
-				pos = null
-				count = 0
-				prioList.forEach(a => {
-					if(a < 5){
-						pos = positions[count]
-					}
-					count++;
-				})
-				indexPos = positions.indexOf(pos)
-				if(blue[indexPos] == ""){
-					blue[indexPos] = pname
-				}else if(red[indexPos] == ""){
-					red[indexPos] = pname
-				}else{
-					impossible += [pname]
-				}
-			}else if(prioList.reduce((a, b) => a + b, 0) == 25){
-				/* those are fillers */
-				fillers += [pname]
-			}else{
-				for(i = 0; i<5; i++){
-					dictToBeSorted[i] += [{ "name" : pname, "val" : prioList[i]}]
-				}
-			}
-
-		}
-	}
-
-	/* fill rest */
-	for(i = 0; i < 5; i++){
-		if(red[i] == ""){
-			candidates = dictToBeSorted[i]
-		}
-		if(blue[i] == ""){
-
 		}
 	}
 
