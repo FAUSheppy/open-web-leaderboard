@@ -1,5 +1,5 @@
 positions = [ "Top", "Jungle", "Mid", "Support" , "Bottom" ]
-acceptedParser = [ "top", "jungle", "mid", "sup" , "bot", "adc", "support", "bottom" ]
+acceptedParser = [ "top", "jungle", "mid", "sup" , "bot", "adc", "support", "bottom", "*" ]
 
 function checkPlayer() {
 	if(this.value == ""){
