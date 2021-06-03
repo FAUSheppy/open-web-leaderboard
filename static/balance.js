@@ -90,6 +90,8 @@ function fastPosChanged() {
 
 function balance(){
 	
+	cont = document.getElementById("response-container")
+	cont.innerHTML = ""
 	sides  = ["left", "right"]
 
 	blue = [ "", "", "", "", ""]
@@ -129,6 +131,8 @@ function balance(){
 	jsonData = JSON.stringify(dictAll, null, 4);
 
 	/* transmitt */
+	spinner = document.getElementById("loading")
+	spinner.style.display = "block";
 	fetch(window.location.href, {
   		method: 'post',
   		headers: {
@@ -136,7 +140,7 @@ function balance(){
     			'Content-Type': 'application/json' },
   		body: jsonData
 	}).then(r => r.json()).then(j => {
-		cont = document.getElementById("response-container")
+		spinner.style.display = "none";
 		cont.innerHTML = j["content"]
 	})
 
