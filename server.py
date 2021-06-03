@@ -145,6 +145,10 @@ def balanceTool():
 
     if flask.request.method == 'POST':
 
+        players = []
+        for k,v in flask.request.json.items():
+            players += [Player(k, v)]
+
         permutations = itertools.permutations(players)
         
         best = 100
@@ -154,16 +158,17 @@ def balanceTool():
             cur = 0
             
             for i in range(len(option)):
-                cur += option[i].prio[i%5]
+                cur += int(option[i].prio[i%5])
         
             if cur < best:
                 best = cur
                 bestOption = option
+                print(cur)
         
         retDict = { "left" : {}, "right" : {} }
-        for i in range(len(positions)):
-            retDict["left"].update( { positions[i] : option[i].name   })
-            retDict["right"].update({ positions[i] : option[i%5].name })
+        for i in range(5):
+            retDict["left"].update( { positions[i] : bestOption[i].name   })
+            retDict["right"].update({ positions[i] : bestOption[i+5].name })
 
         renderContent = flask.render_template("balance_response_partial.html", d=retDict,
                                                 requests=flask.request.json,
