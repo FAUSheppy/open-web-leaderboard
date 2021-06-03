@@ -159,7 +159,7 @@ function parseMultiline(){
 
 		acceptedParser.forEach( p => {
 			i = l.indexOf(" " + p)
-			if(i > 3 && i < lowestIndex){
+			if(i >= 3 && i < lowestIndex){
 				lowestIndex = i
 			}
 		})
