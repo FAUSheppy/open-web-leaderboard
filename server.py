@@ -166,6 +166,11 @@ def balanceTool():
                 print(cur)
         
         retDict = { "left" : {}, "right" : {} }
+        bestOption = list(bestOption)
+        if len(bestOption) < 10:
+            for x in range(10-len(bestOption)):
+                bestOption += [Player("", [0,0,0,0,0])]
+
         for i in range(5):
             retDict["left"].update( { positions[i] : bestOption[i].name   })
             retDict["right"].update({ positions[i] : bestOption[i+5].name })
