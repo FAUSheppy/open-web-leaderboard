@@ -4,6 +4,7 @@ import requests
 import argparse
 import datetime
 import flask_caching as fcache
+import itertools
 import json
 import os
 import MapSummary
@@ -133,92 +134,36 @@ def rounds():
     # display outcome
     # display map
 
+class Player:
+    def __init__(self, name, prio):
+            self.name = name
+            self.prio = prio
+
 @app.route("/balance-tool", methods=['GET', 'POST'])
 def balanceTool():
     positions=["Top", "Jungle", "Mid", "Support", "Bottom"]
 
     if flask.request.method == 'POST':
 
-        doneDict = dict()
-        retDict = { "left" : {}, "right" : {} }
-        recheckDict = {}
-        for p in positions:
-            retDict["left"].update({ p : "" })
-            retDict["right"].update({ p :"" })
-
-        # basic greedy #
-        for x in range(5):
-            for prio in range(1,6):
-                for k,v in flask.request.json.items():
-                    if k in doneDict:
-                        continue
-                    if v[x] == str(prio):
-                        if retDict["left"][positions[x]] == "":
-                            retDict["left"][positions[x]] = k
-                            doneDict.update({ k : True })
-                            if prio == 5:
-                                recheckDict.update({ k : x })
-                        elif retDict["right"][positions[x]] == "":
-                            retDict["right"][positions[x]] = k
-                            doneDict.update({ k : True })
-                            if prio == 5:
-                                recheckDict.update({ k : x })
-      
-        # try to improve the bad ones #
-        swapped = {}
-        print(recheckDict)
-        for k,v in recheckDict.items():
-            if k in swapped:
-                print("k in swapp")
-                continue
-
-            # determine own side for backswapping #
-            selfSide = None
-            if k in retDict["left"].values():
-                selfSide = "left"
-            else:
-                selfSide = "right"
-
-
-            #  go through all positions look for better matches #
-            for posId in range(5):
-
-                currentHolderLeft  = retDict["left"][positions[posId]]
-                currentHolderRight = retDict["right"][positions[posId]]
-
-                # right side swaps #
-                if (int(flask.request.json[currentHolderRight][v]) <= 
-                        int(flask.request.json[currentHolderRight][posId]) and
-                        currentHolderRight != k and
-                        not currentHolderRight in swapped):
-
-                    print("(R) Swapping {} with {}".format(k, currentHolderRight))
-
-                    retDict["right"][positions[posId]] = k
-                    retDict[selfSide][positions[v]] = currentHolderRight
-
-                    swapped.update({ k : True})
-                    swapped.update({ currentHolderRight : True})
-
-                    break
-
-                # left side swaps #
-                if (int(flask.request.json[currentHolderRight][v]) <= 
-                        int(flask.request.json[currentHolderLeft][posId]) and
-                        currentHolderLeft != k and
-                        not currentHolderRight in swapped):
-
-                    print("(L) Swapping {} with {}".format(k, currentHolderLeft))
-
-                    retDict["left"][positions[posId]] = k
-                    retDict[selfSide][positions[v]] = currentHolderLeft
-
-                    swapped.update({ k : True})
-                    swapped.update({ currentHolderLeft : True})
-
-                    break
-
+        permutations = itertools.permutations(players)
         
+        best = 100
+        bestOption = None
+        for option in permutations:
+        
+            cur = 0
+            
+            for i in range(len(option)):
+                cur += option[i].prio[i%5]
+        
+            if cur < best:
+                best = cur
+                bestOption = option
+        
+        retDict = { "left" : {}, "right" : {} }
+        for i in range(len(positions)):
+            retDict["left"].update( { positions[i] : option[i].name   })
+            retDict["right"].update({ positions[i] : option[i%5].name })
 
         renderContent = flask.render_template("balance_response_partial.html", d=retDict,
                                                 requests=flask.request.json,
