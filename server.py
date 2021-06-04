@@ -241,6 +241,7 @@ def balanceTool():
             ident = givenIdent
         else:
             ident = secrets.token_urlsafe(16)
+            return flask.redirect("/balance-tool?id={}".format(ident))
         return flask.render_template("json_builder.html", 
                                     positions=positions,
                                     sides=["left", "right"],
