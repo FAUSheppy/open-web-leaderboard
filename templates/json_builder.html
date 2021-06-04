@@ -8,6 +8,7 @@
     </head>
     <body class="bg-special">
         {% include 'navbar.html' %}
+	<div id="ident-field" style="display: none;">{{ ident }}</div>
         <div class="container mt-3 mb-3" role="main">
             
             <div class="row">
@@ -17,23 +18,21 @@
             </div>
 
 	    <button type="button" class="mb-3 btn btn-secondary" onclick="balance()">Go</button>
-
-		<div class="spinner-border" id="loading" style="display: none;" role="status">
-		  <span class="sr-only">Loading...</span>
-		</div>
+	    <button type="button" class="mb-3 btn btn-secondary" onclick="queryForPlayerData()">
+		    Check Submissions
+	    </button></br>
+	    <button id="copyLink" type="button" class="mb-3 btn btn-secondary" onclick="copy()">
+		    Copy Submission Link
+	    </button>
+	    
+	    <div class="spinner-border" id="loading" style="display: none;" role="status">
+	   	  <span class="sr-only">Loading...</span>
+	    </div>
             <div id="response-container" class="mt-3 mb-3">
             </div>
             
             <hr>
 
-	    <textarea type="text" id="multi-line-copy" rows="10" 
-		placeholder="Have everybody write their roles in the form of 'top > mid = sup = jungle >adc' in the chat and then copy it in here and hit 'Use Multiline Input' :)" 
-		    class="form-control md-textarea"></textarea>
-	    <button type="button" class="mb-3 btn btn-secondary" onclick="parseMultiline()">
-	    	Use Multiline Input..
-	    </button>
-
-            <hr>
 
             <div class="row">
 	    {% for side in sides %}
@@ -73,6 +72,15 @@
                 </div>
 	    {% endfor %}
             </div>
+            <hr>
+
+	    <textarea type="text" id="multi-line-copy" rows="10" 
+		placeholder="Have everybody write their roles in the form of 'top > mid = sup = jungle >adc' in the chat and then copy it in here and hit 'Use Multiline Input' :)" 
+		    class="form-control md-textarea"></textarea>
+	    <button type="button" class="mb-3 btn btn-secondary" onclick="parseMultiline()">
+	    	Use Multiline Input..
+	    </button>
+
             <hr>
         </div>
         {% include 'footer.html' %}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Balance and Submission Tool</title>
+        <meta name="Description" content="Sheppy is awesome?">
+	<script defer src="/static/balance.js"></script>
+        {% include 'default_head_content.html' %}
+    </head>
+    <body class="bg-special">
+        {% include 'navbar.html' %}
+        <div class="container mt-3 mb-3" role="main">
+            
+            	<div class="row">
+                	<div class="col-sm">
+				<h1>Role Preference Submission Tool</h1>
+                	</div>
+            	</div>
+
+		<!-- player name field -->
+		<form action="/role-submission?id={{ ident }}" method="POST">
+			<input class="form-control pname m-3" type="text" placeholder="Player"
+				name="playername" id="playername">
+				
+			<!-- fast postition slection field -->
+			<input class="form-control fastpos m-3" type="text" 
+				placeholder="top > mid = bot"
+				id="fastpos-submission">
+			
+			<div class="col-sm m-3" style="min-width: 300px;">
+				<!-- checkboxes for pos -->
+				{% for pos in positions %}
+				<div>
+					<label style="min-width: 100px;"
+						for="prio_{{ pos }}">{{ pos }}</label>
+					<select name="prio_{{ pos }}" id="prio_{{ pos }}"
+						class="form-select ml-3 mr-3">
+  						<option value="1">1</option>
+  						<option value="2">2</option>
+  						<option value="3">3</option>
+  						<option value="4">4</option>
+  						<option value="5">5</option>
+					</select>
+				</div>
+				{% endfor %}
+                	</div>
+			<input type="submit" value="Submit">
+		</form>
+
+        </div>
+        {% include 'footer.html' %}
+    </body>
+</html>

@@ -1,7 +1,8 @@
 positions = [ "Top", "Jungle", "Mid", "Support" , "Bottom" ]
 acceptedParser = [ "top", "jungle", "mid", "sup" , "bot", "adc", "support", "bottom", "*" ]
+sides = [ "left", "right"]
 
-function checkPlayer() {
+var checkPlayerFunc = function checkPlayer() {
 	if(this.value == ""){
 		return
 	}
@@ -15,7 +16,7 @@ function checkPlayer() {
 	})
 }
 
-function fastPosChanged() {
+var fastPosChangedFunc = function fastPosChanged() {
 
 	accepted = [ "top", "jungle", "mid", "sup" , "bot" ]
 	uniqArr  = []
@@ -63,7 +64,13 @@ function fastPosChanged() {
 		arr = this.id.split("-")
 		pNr = arr[arr.length-1]
 		side = this.id.includes("left") ? "left" : "right"
-		string = "prio-" + side + "-" + accepted[i] + "-" + pNr
+		
+		roleSubmission = document.getElementById("fastpos-submission")
+		if(roleSubmission){
+			string = "prio_" + accepted[i]
+		}else {
+			string = "prio-" + side + "-" + accepted[i] + "-" + pNr
+		}
 
 		string = string.replace("top","Top")
 		string = string.replace("jungle","Jungle")
@@ -172,7 +179,6 @@ function parseMultiline(){
 		}
 	})
 
-	sides = [ "left", "right"]
 	count = 0
 	sides.forEach(s => {
 		for(i = 0; i<5; i++){
@@ -197,11 +203,63 @@ function parseMultiline(){
 	balance()
 }
 
+function queryForPlayerData(){
+	ident = document.getElementById("ident-field").innerHTML
+	fetch("/balance-tool-data?id=" + ident).then(r => r.json()).then(j => {
+		if("no-data" in j){
+			return
+		}
+		j["submissions"].forEach(el => {
+		    console.log(el)
+		    breakToSubmissions = false
+		    for(sid = 0; sid < 2; sid++){
+			if(breakToSubmissions){
+			    break;
+			}
+			for(id = 0; id < 5; id++){
+			    stringPid = `playername-${sides[sid]}-${id}`
+			    pnameObj = document.getElementById(stringPid)
+			    if(pnameObj.value == "" || pnameObj.value == el["name"]){
+				pnameObj.value = el["name"]
+				for(acc = 0; acc < 5; acc++){
+				    stringSelectorId = `prio-${sides[sid]}-${positions[acc]}-${id}`
+				    selObj = document.getElementById(stringSelectorId)
+				    selObj.value = el[positions[acc]]
+				}
+				breakToSubmissions = true
+				break;
+			    }
+			}
+		    }
+		})
+	})
+}
+
+function copy() {
+
+	ident = document.getElementById("ident-field").innerHTML
+	path = "/role-submission?id="
+	copyText = window.location.protocol + window.location.hostname + path + ident
+	
+	navigator.clipboard.writeText(copyText)
+        document.getElementById("copyLink").innerHTML = "Copied!"
+	setTimeout(() => {
+        	document.getElementById("copyLink").innerHTML = "Copy Submission Link" }, 500);
+
+}
+
 fastPosFields = document.getElementsByClassName("fastpos")
 playerNameFields = document.getElementsByClassName("pname")
 
-playerNameFields.forEach(el => el.addEventListener('input', checkPlayer));
-playerNameFields.forEach(el => el.addEventListener('focus', checkPlayer));
+playerNameFields.forEach(el => el.addEventListener('input', checkPlayerFunc));
+playerNameFields.forEach(el => el.addEventListener('focus', checkPlayerFunc));
 
-fastPosFields.forEach(el => el.addEventListener('input', fastPosChanged));
-fastPosFields.forEach(el => el.addEventListener('focus', fastPosChanged));
+fastPosFields.forEach(el => el.addEventListener('input', fastPosChangedFunc));
+//fastPosFields.forEach(el => el.addEventListener('focus', fastPosChangedFunc));
+
+fastposSubmission = document.getElementById("fastpos-submission")
+if(fastposSubmission){
+	fastposSubmission.addEventListener("input", fastPosChangedFunc)
+	fastposSubmission.addEventListener("focus", fastPosChangedFunc)
+}
+setInterval(queryForPlayerData(), 3000)

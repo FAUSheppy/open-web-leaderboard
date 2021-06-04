@@ -8,6 +8,8 @@ import itertools
 import json
 import os
 import MapSummary
+import random
+import secrets
 
 from database import DatabaseConnection
 
@@ -139,6 +141,50 @@ class Player:
             self.name = name
             self.prio = prio
 
+# TODO
+submission = dict()
+@app.route("/role-submission", methods=['GET', 'POST'])
+def roleSubmissionTool():
+    positions=["Top", "Jungle", "Mid", "Support", "Bottom"]
+
+    ident = flask.request.args.get("id")
+    if flask.request.method == 'POST':
+
+        if not ident in submission:
+            submission.update({ ident : [] })
+        
+        tmp = dict()
+        tmp.update({ "name" : flask.request.form["playername"] })
+        for p in positions:
+            tmp.update({ p : flask.request.form["prio_{}".format(p)] })
+
+        existed = False
+        for pl in submission[ident]:
+            if pl["name"] == tmp["name"]:
+                for p in positions:
+                    pl.update({ p : flask.request.form["prio_{}".format(p)] })
+                existed = True
+                break;
+
+        if not existed:
+            submission[ident] += [tmp]
+
+        return flask.redirect("/balance-tool?id={}".format(ident))
+    else:
+        return flask.render_template("role_submission.html", 
+                                    positions=positions,
+                                    ident=ident)
+
+@app.route("/balance-tool-data")
+def balanceToolData():
+    ident = flask.request.args.get("id")
+    retDict = dict()
+    if not ident in submission:
+        return flask.Response(json.dumps({ "no-data" : False }), 200, mimetype='application/json')
+    retDict.update({ "submissions" : submission[ident] })
+    return flask.Response(json.dumps(retDict), 200, mimetype='application/json')
+
+
 @app.route("/balance-tool", methods=['GET', 'POST'])
 def balanceTool():
     positions=["Top", "Jungle", "Mid", "Support", "Bottom"]
@@ -181,9 +227,15 @@ def balanceTool():
         return flask.Response(
                 json.dumps({ "content": renderContent }), 200, mimetype='application/json')
     else:
+        givenIdent = flask.request.args.get("id")
+        if givenIdent:
+            ident = givenIdent
+        else:
+            ident = secrets.token_urlsafe(16)
         return flask.render_template("json_builder.html", 
                                     positions=positions,
-                                    sides=["left", "right"])
+                                    sides=["left", "right"],
+                                    ident=ident)
 
 @app.route("/player")
 def player():
