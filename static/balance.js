@@ -263,3 +263,8 @@ if(fastposSubmission){
     fastposSubmission.addEventListener("focus", fastPosChangedFunc)
 }
 setInterval(queryForPlayerData(), 3000)
+
+formContainer = document.getElementById("form-container")
+if(formContainer){
+    formContainer.reset()
+}

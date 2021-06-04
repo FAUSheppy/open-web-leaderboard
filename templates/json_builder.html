@@ -34,7 +34,7 @@
             <hr>
 
 
-            <div class="row">
+            <form id="form-container" class="row">
 	    {% for side in sides %}
                 <div class="col-sm">
                     {% for field in range(5) %}
@@ -71,7 +71,7 @@
                     {% endfor %}
                 </div>
 	    {% endfor %}
-            </div>
+            </form>
             <hr>
 
 	    <textarea type="text" id="multi-line-copy" rows="10" 
