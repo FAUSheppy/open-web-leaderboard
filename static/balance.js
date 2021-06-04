@@ -239,7 +239,7 @@ function copy() {
 
     ident = document.getElementById("ident-field").innerHTML
     path = "/role-submission?id="
-    copyText = window.location.protocol + window.location.hostname + path + ident
+    copyText = window.location.protocol + "//" + window.location.hostname + path + ident
     
     navigator.clipboard.writeText(copyText)
         document.getElementById("copyLink").innerHTML = "Copied!"
