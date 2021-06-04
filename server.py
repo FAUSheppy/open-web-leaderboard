@@ -193,7 +193,15 @@ def balanceTool():
 
         players = []
         for k,v in flask.request.json.items():
+            for i in range(5):
+                if v[i] in positions:
+                    v[i] = 5
+                else:
+                    v[i] = int(v[i])
             players += [Player(k, v)]
+        
+        # theoretical minnimum #
+        theoMin = sum([ min(p.prio) for p in players ])
 
         permutations = itertools.permutations(players)
         
@@ -204,7 +212,7 @@ def balanceTool():
             cur = 0
             
             for i in range(len(option)):
-                cur += int(option[i].prio[i%5])
+                cur += option[i].prio[i%5]
         
             if cur < best:
                 best = cur
@@ -223,7 +231,8 @@ def balanceTool():
 
         renderContent = flask.render_template("balance_response_partial.html", d=retDict,
                                                 requests=flask.request.json,
-                                                positions=positions)
+                                                positions=positions,
+                                                quality=int(theoMin/best*100))
         return flask.Response(
                 json.dumps({ "content": renderContent }), 200, mimetype='application/json')
     else:

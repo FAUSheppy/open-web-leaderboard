@@ -198,8 +198,8 @@ function parseMultiline(){
         }
     })
 
-    const focusEvent = new Event("focus")
-    fastPosFields.forEach(el => el.dispatchEvent(focusEvent))
+    const inputEvent = new Event("input")
+    fastPosFields.forEach(el => el.dispatchEvent(inputEvent))
     balance()
 }
 

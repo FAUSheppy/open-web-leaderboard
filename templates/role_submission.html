@@ -23,7 +23,7 @@
 				
 			<!-- fast postition slection field -->
 			<input class="form-control fastpos m-3" type="text" 
-				placeholder="top > mid = bot"
+				placeholder="Fast Position Input"
 				id="fastpos-submission">
 			
 			<div class="col-sm m-3" style="min-width: 300px;">
@@ -44,6 +44,23 @@
 				{% endfor %}
                 	</div>
 			<input type="submit" value="Submit">
+
+			<div class="mt-5">
+				<h4>Priorität</h4>
+				<p>
+					1 = höchste	</br>
+					5 = niedrigste  </br>
+				</p>
+				<hr class="my-3">
+				<h4>Fast-Position</h4>
+				<p>
+				<b>Positionen können in den Kurzschreibweisen: top, mid, bot, jungle, support mit "=" und ">" angegeben werden. Zum Beispiel:</b></br></br>
+					top > mid > top = adc</br>
+					mid = top > bot</br>
+					support > jungle</br>
+					etc..</br>
+				</p>
+			</div>
 		</form>
 
         </div>
