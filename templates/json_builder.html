@@ -17,14 +17,60 @@
                 </div>
             </div>
 
-	    <button type="button" class="mb-3 btn btn-secondary" onclick="balance()">Find Teams</button>
-	    </br>
-	    <button id="copyLink" type="button" class="mb-3 btn btn-secondary" onclick="copy()">
-		    Copy Submission Link
-	    </button>
-	    <button type="button" class="mb-3 btn btn-secondary" onclick="queryForPlayerData()">
-		    Check Submissions
-	    </button>
+	    <div class="row">
+		<div class="col">
+	    		<button type="button" class="mb-3 btn btn-secondary" onclick="balance()">
+				Find Teams
+			</button>
+	    		</br>
+	    		<button id="copyLink" type="button" 
+			   class="mb-3 btn btn-secondary" onclick="copy()">
+	    		        Copy Submission Link
+	    		</button>
+	    		<button type="button" 
+			   class="mb-3 btn btn-secondary" onclick="queryForPlayerData()">
+	    		        Check Submissions
+	    		</button>
+			{% if True %}
+			<button class="btn btn-primary" type="button" data-toggle="collapse" 
+				data-target="#hilfe" aria-expanded="false"
+				aria-controls="hilfe">
+				Hilfe Anzeigen
+  			</button>
+			<div id="hilfe" class="collapse mt-5 border-special">
+				<h4>Priorität</h4>
+				<p>
+					1 = höchste Priorität
+					5 = niedrigste Priorität
+				</p>
+				<hr class="my-3">
+				<h4>Fast Position</h4>
+				<p>
+				<b>Positionen können in den Kurzschreibweisen: top, mid, bot, jungle, support mit "=" und ">" angegeben werden. Zum Beispiel:</b></br></br>
+					top > mid > top = adc</br>
+					mid = top > bot</br>
+					support > jungle</br>
+					etc..</br>
+				</p>
+				<hr class="my-3">
+				<h4>Submission Link</h4>
+				<p>
+					Mit diesem Link können Spieler eine Positionspräferenz selbst übermitteln, einfach diesen Link in den Chat pasten.
+				</p>
+				<hr class="my-3">
+				<h4>Find Teams</h4>
+				<p>
+				Sobald alle eingetragen sind einmal auf "Find Teams" klicken und auf den Vorschlag warten.
+				</p>
+				<hr class="my-3">
+				<h4>Multiline Input</h4>
+				<p>
+				    Jeder Kann seine Rollen im Schnellformat in den Chat schreiben, in das Feld unten kopieren und Button drücken (überschreibt existierende Einträge).
+				</p>
+			</div>	
+			{% endif %}
+		</div>
+	    </div>
 	    
 	    <div class="spinner-border" id="loading" style="display: none;" role="status">
 	   	  <span class="sr-only">Loading...</span>

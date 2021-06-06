@@ -8,6 +8,12 @@ body{
 
 }
 
+.border-special{
+    border-style: outset;
+    border-width: 0.2px;
+    padding: 20px;
+}
+
 .top-bar{
     background-color: orange;
     padding-bottom: 10px;
