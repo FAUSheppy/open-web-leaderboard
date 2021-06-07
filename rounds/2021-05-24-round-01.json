@@ -1,0 +1,71 @@
+{
+	"map" : "SR",
+	"winner-side" : 1,
+	"winners"  : [
+		{
+			"playerId" : "TryhardYordle",
+			"playerName" : "TryhardYordle",
+			"isFake" : false,
+			"activeTime" : 1971
+		},
+		{
+			"playerId" : "ESE Schmohi",
+			"playerName" : "ESE Schmohi",
+			"isFake" : false,
+			"activeTime" : 1971
+		},
+		{
+			"playerId" : "Area 522",
+			"playerName" : "Area 522",
+			"isFake" : false,
+			"activeTime" : 1971
+		},
+		{
+			"playerId" : "iTrash",
+			"playerName" : "iTrash",
+			"isFake" : false,
+			"activeTime" : 1971
+		},
+		{
+			"playerId" : "Téa Jay",
+			"playerName" : "Téa Jay",
+			"isFake" : false,
+			"activeTime" : 1971
+		}
+
+	],
+	"losers"   : [
+		{
+			"playerId" : "Phirop",
+			"playerName" : "Phirop",
+			"isFake" : false,
+			"activeTime" : 1971
+		},
+		{
+			"playerId" : "ENTAC",
+			"playerName" : "ENTAC",
+			"isFake" : false,
+			"activeTime" : 1971
+		},
+		{
+			"playerId" : "BoringBookCover",
+			"playerName" : "BoringBookCover",
+			"isFake" : false,
+			"activeTime" : 1971
+		},
+		{
+			"playerId" : "ESE Litzuck",
+			"playerName" : "ESE Litzuck",
+			"isFake" : false,
+			"activeTime" : 1971
+		},
+		{
+			"playerId" : "ESE MarsUltor",
+			"playerName" : "ESE MarsUltor",
+			"isFake" : false,
+			"activeTime" : 1971
+		}
+	],
+	"duration" : 1971,
+	"startTime" : "2021-05-24T20:00+02:00"
+}

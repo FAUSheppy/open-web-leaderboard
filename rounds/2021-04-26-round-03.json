@@ -1,0 +1,50 @@
+{
+    "map": "SR",
+    "winner-side": "1",
+    "winners": [
+        {
+            "playerId": "Phirop",
+            "isFake": false
+        },
+        {
+            "playerId": "Vyne",
+            "isFake": false
+        },
+        {
+            "playerId": "ESE Felix",
+            "isFake": false
+        },
+        {
+            "playerId": "ChessGM lbfxd",
+            "isFake": false
+        },
+        {
+            "playerId": "TheSlapstick",
+            "isFake": false
+        }
+    ],
+    "losers": [
+        {
+            "playerId": "ENTAC",
+            "isFake": false
+        },
+        {
+            "playerId": "xXxMarethyuxXx",
+            "isFake": false
+        },
+        {
+            "playerId": "ESE Kniveless",
+            "isFake": false
+        },
+        {
+            "playerId": "JuckF Bierhuhn",
+            "isFake": false
+        },
+        {
+            "playerId": "TryhardYordle",
+            "isFake": false
+        }
+    ],
+    "duration": 2017,
+    "startTime": "2021-04-25T20:00+02:00"
+}

@@ -1,0 +1,50 @@
+{
+    "map": "SR",
+    "winner-side": "0",
+    "winners": [
+        {
+            "playerId": "Phirop",
+            "isFake": false
+        },
+        {
+            "playerId": "ENTAC",
+            "isFake": false
+        },
+        {
+            "playerId": "Victor Lustig",
+            "isFake": false
+        },
+        {
+            "playerId": "TSo",
+            "isFake": false
+        },
+        {
+            "playerId": "ESE MarsUltor",
+            "isFake": false
+        }
+    ],
+    "losers": [
+        {
+            "playerId": "Téa Jay",
+            "isFake": false
+        },
+        {
+            "playerId": "Heinz sama",
+            "isFake": false
+        },
+        {
+            "playerId": "Area 522",
+            "isFake": false
+        },
+        {
+            "playerId": "Byndeskanzler",
+            "isFake": false
+        },
+        {
+            "playerId": "ESE Schmohi",
+            "isFake": false
+        }
+    ],
+    "duration": 2019,
+    "startTime": "2021-06-07T20:00+02:00"
+}

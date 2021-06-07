@@ -1,0 +1,50 @@
+{
+    "map": "SR",
+    "winner-side": "1",
+    "winners": [
+        {
+            "playerId": "Phirop",
+            "isFake": false
+        },
+        {
+            "playerId": "xXxMarethyuxXx",
+            "isFake": false
+        },
+        {
+            "playerId": "iTrash",
+            "isFake": false
+        },
+        {
+            "playerId": "JuckF Bierhuhn",
+            "isFake": false
+        },
+        {
+            "playerId": "ENTAC",
+            "isFake": false
+        }
+    ],
+    "losers": [
+        {
+            "playerId": "TryhardYordle",
+            "isFake": false
+        },
+        {
+            "playerId": "ChessGM lbfxd",
+            "isFake": false
+        },
+        {
+            "playerId": "TheSlapstick",
+            "isFake": false
+        },
+        {
+            "playerId": "Vyne",
+            "isFake": false
+        },
+        {
+            "playerId": "ESE Felix",
+            "isFake": false
+        }
+    ],
+    "duration": 1456,
+    "startTime": "2021-04-25T22:00+02:00"
+}

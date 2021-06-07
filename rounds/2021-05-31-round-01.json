@@ -1,0 +1,72 @@
+{
+	"map" : "SR",
+	"winner-side" : 0,
+	"winners"  : [
+		{
+			"playerId" : "Vyne",
+			"playerName" : "Vyne",
+			"isFake" : false,
+			"activeTime" : 1927
+		},
+		{
+			"playerId" : "ESE Kniveless",
+			"playerName" : "ESE Kniveless",
+			"isFake" : false,
+			"activeTime" : 1927
+		},
+		{
+			"playerId" : "ESE Vinnie",
+			"playerName" : "ESE Vinnie",
+			"isFake" : false,
+			"activeTime" : 1927
+		},
+		{
+			"playerId" : "ESE Litzuck",
+			"playerName" : "ESE Litzuck",
+			"isFake" : false,
+			"activeTime" : 1927
+		},
+		{
+			"playerId" : "ESE MarsUltor",
+			"playerName" : "ESE MarsUltor",
+			"isFake" : false,
+			"activeTime" : 1927
+		}
+
+	],
+	"losers"   : [
+		{
+			"playerId" : "ESE Schmohi",
+			"playerName" : "ESE Schmohi",
+			"isFake" : false,
+			"activeTime" : 1927
+		},
+		{
+			"playerId" : "ESE Nemesis",
+			"playerName" : "ESE Nemesis",
+			"isFake" : false,
+			"activeTime" : 1927
+		},
+		{
+			"playerId" : "ENTAC",
+			"playerName" : "ENTAC",
+			"isFake" : false,
+			"activeTime" : 1927
+		},
+		{
+			"playerId" : "Area 522",
+			"playerName" : "Area 552",
+			"isFake" : false,
+			"activeTime" : 1927
+		},
+		{
+			"playerId" : "Subsidiary",
+			"playerName" : "Subsidiary",
+			"isFake" : false,
+			"activeTime" : 1927
+		}
+
+	],
+	"duration" : 1927,
+	"startTime" : "2021-05-31T20:00+02:00"
+}
