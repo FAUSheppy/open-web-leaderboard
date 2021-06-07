@@ -223,16 +223,16 @@ def balanceTool():
                 cur += option[i].prio[i%5]
        
             if theoMin/cur > threshold:
-                alternateOptionsAboveThreshold += [option]
+                alternateOptionsAboveThreshold.append(list(option))
 
             if cur < best:
                 best = cur
-                bestOption = option
+                bestOption = list(option)
                 alternateOptions = []
-                alternateOptions += [option]
+                alternateOptions.append(list(option))
                 print("Option Found Quality: {}%".format(str(int(theoMin/cur*100))))
             elif cur == best:
-                alternateOptions += [option]
+                alternateOptions.append(list(option))
        
         alternateOptions += alternateOptionsAboveThreshold
         retDict = { "left" : {}, "right" : {} }
@@ -274,7 +274,6 @@ def balanceTool():
                 currDiff = diff;
                 print("Option found rating mu-diff: {}".format(diff))
                 bestOptionWithRating = o
-                best =
 
         for i in range(5):
             retDict["left"].update( { positions[i] : bestOptionWithRating[i].name   })
