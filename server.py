@@ -118,7 +118,7 @@ def rounds():
     end   = flask.request.args.get("end")
     
     if not start or not end:
-        start = datetime.datetime.now() - datetime.timedelta(days=7)
+        start = datetime.datetime.now() - datetime.timedelta(days=365)
         end   = datetime.datetime.now()
     else:
         start = datetime.datetime.fromtimestamp(start)
@@ -189,10 +189,16 @@ def balanceToolData():
 def balanceTool():
     positions=["Top", "Jungle", "Mid", "Support", "Bottom"]
 
+    db = DatabaseConnection(app.config["DB_PATH"])
+
     if flask.request.method == 'POST':
 
         players = []
+        threshold = 2
         for k,v in flask.request.json.items():
+            if k == "acceptable-solution-threshold":
+                threshold = v
+                continue
             for i in range(5):
                 if v[i] in positions:
                     v[i] = 5
@@ -207,27 +213,72 @@ def balanceTool():
         
         best = 100
         bestOption = None
+        alternateOptions = []
+        alternateOptionsAboveThreshold = []
         for option in permutations:
         
             cur = 0
             
             for i in range(len(option)):
                 cur += option[i].prio[i%5]
-        
+       
+            if theoMin/cur > threshold:
+                alternateOptionsAboveThreshold += [option]
+
             if cur < best:
                 best = cur
                 bestOption = option
-                print(cur)
-        
+                alternateOptions = []
+                alternateOptions += [option]
+                print("Option Found Quality: {}%".format(str(int(theoMin/cur*100))))
+            elif cur == best:
+                alternateOptions += [option]
+       
+        alternateOptions += alternateOptionsAboveThreshold
         retDict = { "left" : {}, "right" : {} }
         bestOption = list(bestOption)
         if len(bestOption) < 10:
             for x in range(10-len(bestOption)):
                 bestOption += [Player("", [0,0,0,0,0])]
+        for o in alternateOptions:
+            for x in range(10-len(o)):
+                o += [Player("", [0,0,0,0,0])]
+
+        # fix options with rating #
+        bestOptionWithRating = None
+        currDiff = 100000
+        for o in alternateOptions:
+            firstHalf = o[:2]
+            secondHalf = o[2:]
+
+            firstHalfPiL = [ db.getPlayerById(p.name) for p in firstHalf ]
+            secondHalfPiL = [ db.getPlayerById(p.name) for p in secondHalf ]
+
+            firstHalfVal = 0
+            secondHalfVal = 0
+            
+            for pil in firstHalfPiL:
+                if not pil:
+                    continue
+                else:
+                    firstHalfVal += pil.mu
+
+            for pil in secondHalfPiL:
+                if not pil:
+                    continue
+                else:
+                    secondHalfVal += pil.mu
+
+            diff = abs(firstHalfVal - secondHalfVal)
+            if diff < currDiff:
+                currDiff = diff;
+                print("Option found rating mu-diff: {}".format(diff))
+                bestOptionWithRating = o
+                best =
 
         for i in range(5):
-            retDict["left"].update( { positions[i] : bestOption[i].name   })
-            retDict["right"].update({ positions[i] : bestOption[i+5].name })
+            retDict["left"].update( { positions[i] : bestOptionWithRating[i].name   })
+            retDict["right"].update({ positions[i] : bestOptionWithRating[i+5].name })
 
         renderContent = flask.render_template("balance_response_partial.html", d=retDict,
                                                 requests=flask.request.json,
@@ -304,7 +355,7 @@ def player():
 
 @app.route('/leaderboard')
 @app.route('/')
-@cache.cached(timeout=600, query_string=True)
+@cache.cached(timeout=10, query_string=True)
 def leaderboard():
     '''Show main leaderboard page with range dependant on parameters'''
 

@@ -37,7 +37,21 @@
 				data-target="#hilfe" aria-expanded="false"
 				aria-controls="hilfe">
 				Hilfe Anzeigen
-  			</button>
+			</button>
+	    		<button type="button" 
+			   class="mb-3 btn btn-secondary" onclick="resetAll()">
+				Reset all
+			</button></br>
+			
+			<div class="form-check mt-3">
+  				<input class="form-check-input" type="checkbox" value=""
+						id="prio-balance">
+  				<label class="form-check-label" for="flexCheckChecked">
+					Prioritize balance over positional preferences
+					<p style="color: red;">(experimental)</p>
+  				</label>
+			</div>
+
 			<div id="hilfe" class="collapse mt-5 border-special">
 				<h4>Priorität</h4>
 				<p>

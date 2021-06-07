@@ -134,7 +134,11 @@ function balance(){
 
         }
     }
-
+    
+    prioBalanceCheckbox = document.getElementById("prio-balance")
+    if(prioBalanceCheckbox.checked){
+    	dictAll["acceptable-solution-threshold"] = 0.7
+    }
     jsonData = JSON.stringify(dictAll, null, 4);
 
     /* transmitt */
@@ -266,5 +270,10 @@ setInterval(queryForPlayerData(), 3000)
 
 formContainer = document.getElementById("form-container")
 if(formContainer){
-    formContainer.reset()
+    //formContainer.reset()
+}
+
+function resetAll(){
+	formContainer = document.getElementById("form-container")
+    	formContainer.reset()
 }
