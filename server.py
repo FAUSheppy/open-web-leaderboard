@@ -272,7 +272,9 @@ def leaderboard():
 
 @app.route('/static/<path:path>')
 def send_js(path):
-    return send_from_directory('static', path)
+    response = send_from_directory('static', path)
+    response.headers['Cache-Control'] = "max-age=2592000"
+    return response
 
 @app.before_first_request
 def init():
