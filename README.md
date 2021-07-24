@@ -21,7 +21,7 @@ You can run the leaderboard as a flask standalone (arguments overwrite *config.p
 
 or with a runner like *waitress*:
 
-    /usr/bin/waitress-serve --host 127.0.0.1 --port 5002 --call 'app:createApp
+    /usr/bin/waitress-serve --host 127.0.0.1 --port 5002 --call 'app:createApp'
 
 the *DB_PATH* is set in *config.py* in this case.
 
@@ -47,9 +47,6 @@ Source-Servers can be added via the *servers.json*-file:
     ]
     
 *Python-valve* is required if this file exists.
-
-# Preview
-![open-web-leaderboard](https://media.atlantishq.de/leaderboard-github-picture.png)
 
 # Live Demo
 [insurgency.atlantishq.de](https://insurgency.atlantishq.de)
