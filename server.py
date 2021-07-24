@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import medals
 import flask
 import requests
 import argparse
@@ -159,16 +160,29 @@ def player():
     minRating = 3000
     maxRating = 0
 
+    # data for medals # 
+    medalsRatingList = []
+
     if histData:
         datapoints = histData[playerId]
         if datapoints:
 
             tickCounter = 10
             for dpk in datapoints.keys():
+
+                # timestamp #
                 t = datetime.datetime.fromtimestamp(int(float(dpk)))
                 tsMs = str(int(t.timestamp() * 1000))
-                ratingString = str(int(datapoints[dpk]["mu"]) - 2*int(datapoints[dpk]["sigma"]))
+
+                computedRating = int(datapoints[dpk]["mu"]) - 2*int(datapoints[dpk]["sigma"])
+
+                # for medals #
+                medalsRatingList += [computedRating]
+
+                # for moment js #
+                ratingString = str(computedRating)
                 ratingAmored = '{ x : ' + tsMs + ', y : ' + ratingString + '}'
+                
                 csv_timestamps += [str(tsMs)]
                 csv_ratings += [ratingAmored]
                 
@@ -181,6 +195,8 @@ def player():
                 maxRating = max(maxRating, int(ratingString))
 
     yMin, yMax = prettifyMinMaxY(minRating, maxRating)
+
+    medalsList = medals.getMedals(medalsRatingList, player.games, player.rating)
     
     # change displayed rank to start from 1 :)
     player.rank += 1
@@ -188,7 +204,7 @@ def player():
     return flask.render_template("player.html", player=player, CSV_RATINGS=",".join(csv_ratings), 
                                     CSV_MONTH_YEAR_OF_RATINGS=",".join(csv_month_year),
                                     CSV_TIMESTAMPS=csv_timestamps,
-                                    Y_MIN=yMin, Y_MAX=yMax)
+                                    Y_MIN=yMin, Y_MAX=yMax, medals=medalsList)
 
 @app.route('/leaderboard')
 @app.route('/')
