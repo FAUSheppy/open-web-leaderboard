@@ -204,7 +204,8 @@ def balanceTool():
                     v[i] = 5
                 else:
                     v[i] = int(v[i])
-            players += [Player(k, v)]
+            p = Player(k, v)
+            players += [p]
         
         # theoretical minnimum #
         theoMin = sum([ min(p.prio) for p in players ])
@@ -259,13 +260,13 @@ def balanceTool():
             
             for pil in firstHalfPiL:
                 if not pil:
-                    continue
+                    continue # get rating from api here
                 else:
                     firstHalfVal += pil.mu
 
             for pil in secondHalfPiL:
                 if not pil:
-                    continue
+                    continue # getRatingFromApi(pil.name)
                 else:
                     secondHalfVal += pil.mu
 
