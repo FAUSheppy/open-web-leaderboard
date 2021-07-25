@@ -16,6 +16,20 @@ var checkPlayerFunc = function checkPlayer() {
     })
 }
 
+var checkPlayerApiFunc = function checkPlayer() {
+    if(this.value == ""){
+        return
+    }
+    url = "/player-api?id=" + this.value
+    fetch(url).then(r => {
+        if(r.status == 200){
+            this.style.background = "#74bb74"
+        }else{
+            //this.style.background = "#d25252"
+        }
+    })
+}
+
 var fastPosChangedFunc = function fastPosChanged() {
 
     accepted = [ "top", "jungle", "mid", "sup" , "bot" ]

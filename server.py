@@ -10,11 +10,18 @@ import os
 import MapSummary
 import random
 import secrets
+import riotwatcher
+import time
 
 from database import DatabaseConnection
+import api
 
 
 app = flask.Flask("open-leaderboard")
+
+WATCHER = None
+KEY     = None
+
 
 if os.path.isfile("config.py"):
     app.config.from_object("config")
@@ -248,27 +255,21 @@ def balanceTool():
         # fix options with rating #
         bestOptionWithRating = None
         currDiff = 100000
-        for o in alternateOptions:
-            firstHalf = o[:2]
-            secondHalf = o[2:]
 
-            firstHalfPiL = [ db.getPlayerById(p.name) for p in firstHalf ]
-            secondHalfPiL = [ db.getPlayerById(p.name) for p in secondHalf ]
+        for o in alternateOptions:
+            firstHalf = o[:5]
+            secondHalf = o[5:]
 
             firstHalfVal = 0
             secondHalfVal = 0
-            
-            for pil in firstHalfPiL:
-                if not pil:
-                    continue # get rating from api here
-                else:
-                    firstHalfVal += pil.mu
+           
+            for pil in firstHalf:
+                if pil:
+                    firstHalfVal += api.getPlayerRatingFromApi(pil.name, WATCHER)
 
-            for pil in secondHalfPiL:
-                if not pil:
-                    continue # getRatingFromApi(pil.name)
-                else:
-                    secondHalfVal += pil.mu
+            for pil in secondHalf:
+                if pil:
+                    secondHalfVal += api.getPlayerRatingFromApi(pil.name, WATCHER)
 
             diff = abs(firstHalfVal - secondHalfVal)
             if diff < currDiff:
@@ -297,6 +298,17 @@ def balanceTool():
                                     positions=positions,
                                     sides=["left", "right"],
                                     ident=ident)
+@app.route("/get-cache")
+def getCacheLoc():
+    return (json.dumps(api.getCache()), 200)
+
+@app.route("/player-api")
+def playerApi():
+    result = api.getPlayerRatingFromApi(flask.request.args.get("id"), WATCHER)
+    if result:
+        return ("OK", 200)
+    else:
+        return ("Nope", 404)
 
 @app.route("/player")
 def player():
@@ -446,6 +458,11 @@ def init():
         from valve.source import NoResponseError
         with open(SERVERS_FILE) as f:
             SERVERS = json.load(f)
+
+    global WATCHER
+    with open("key.txt","r") as f:
+        key = f.read().strip()
+        WATCHER = riotwatcher.LolWatcher(key)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Start open-leaderboard', \
