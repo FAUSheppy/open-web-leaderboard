@@ -12,6 +12,7 @@ import random
 import secrets
 import riotwatcher
 import time
+import statistics
 
 from database import DatabaseConnection
 import api
@@ -202,7 +203,7 @@ def balanceTool():
     if flask.request.method == 'POST':
 
         players = []
-        threshold = 2
+        threshold = 0.7
         for k,v in flask.request.json.items():
             if k == "acceptable-solution-threshold":
                 threshold = v
@@ -233,14 +234,15 @@ def balanceTool():
        
             if theoMin/cur > threshold:
                 alternateOptionsAboveThreshold.append(list(option))
-
+            
+            qualityCur = int(theoMin/cur*100)
             if cur < best:
                 best = cur
                 bestOption = list(option)
                 alternateOptions = []
                 alternateOptions.append(list(option))
-                print("Option Found Quality: {}%".format(str(int(theoMin/cur*100))))
-            elif cur == best:
+                print("Option Found Quality: {}%".format(str(qualityCur)))
+            elif cur == best or qualityCur > threshold*100:
                 alternateOptions.append(list(option))
        
         alternateOptions += alternateOptionsAboveThreshold
@@ -255,28 +257,67 @@ def balanceTool():
 
         # fix options with rating #
         bestOptionWithRating = None
-        currDiff = 100000
+        bestOptionRatings = None
 
+        # alternate options rundown positional diff #
+        posCurrDiff = 100000
         for o in alternateOptions:
             firstHalf = o[:5]
             secondHalf = o[5:]
 
-            firstHalfVal = 0
-            secondHalfVal = 0
-           
+            firstHalfVal    = [0, 0, 0, 0, 0]
+            secondHalfVal   = [0, 0, 0, 0, 0]
+          
+            countFirstHalf = 0
             for pil in firstHalf:
                 if pil:
-                    firstHalfVal += api.getPlayerRatingFromApi(pil.name, WATCHER)
+                    firstHalfVal[countFirstHalf] = api.getPlayerRatingFromApi(pil.name, WATCHER)
+                    #print(pil.name, firstHalfVal[countFirstHalf])
+                countFirstHalf += 1
 
+            countSecondHalf = 0
             for pil in secondHalf:
                 if pil:
-                    secondHalfVal += api.getPlayerRatingFromApi(pil.name, WATCHER)
+                    secondHalfVal[countSecondHalf] = api.getPlayerRatingFromApi(pil.name, WATCHER)
+                    #print(pil.name, secondHalfVal[countSecondHalf])
+                countSecondHalf += 1
 
-            diff = abs(firstHalfVal - secondHalfVal)
-            if diff < currDiff:
-                currDiff = diff;
-                print("Option found rating mu-diff: {}".format(diff))
+            posDiff = abs(statistics.median(firstHalfVal) - statistics.median(secondHalfVal))
+
+            # check if posdiff is better #
+            if posDiff < posCurrDiff:
                 bestOptionWithRating = o
+                bestOptionRatings = firstHalfVal + secondHalfVal
+                qualityRatings = -1
+
+                # find the best permutation of this solution #
+                for i in range(0,5):
+                    teamDiff = abs(sum(firstHalfVal) - sum(secondHalfVal))
+
+                    # first flip
+                    tmp = firstHalfVal[i]
+                    firstHalfVal[i] = secondHalfVal[i]
+                    secondHalfVal[i] = tmp
+                    teamDiffNew = abs(sum(firstHalfVal) - sum(secondHalfVal))
+                    
+                    # if new is not better #
+                    if not (teamDiffNew < teamDiff):
+                        # flip it back #
+                        tmp = firstHalfVal[i]
+                        firstHalfVal[i] = secondHalfVal[i]
+                        secondHalfVal[i] = tmp
+                    # else flip the names too #
+                    else:
+                        tmp = firstHalf[i]
+                        firstHalf[i] = secondHalf[i]
+                        secondHalf[i] = tmp
+                        # and reset the option #
+                        bestOptionWithRating = firstHalf + secondHalf
+                        bestOptionRatings = firstHalfVal + secondHalfVal
+                        qualityRatings = min(sum(firstHalfVal)/sum(secondHalfVal),
+                                                sum(secondHalfVal)/sum(firstHalfVal))
+
+
 
         for i in range(5):
             retDict["left"].update( { positions[i] : bestOptionWithRating[i].name   })
@@ -285,7 +326,9 @@ def balanceTool():
         renderContent = flask.render_template("balance_response_partial.html", d=retDict,
                                                 requests=flask.request.json,
                                                 positions=positions,
-                                                quality=int(theoMin/best*100))
+                                                ratings=bestOptionRatings,
+                                                qualityPositions=int(theoMin/best*100),
+                                                qualityRatings=int(qualityRatings*100))
         return flask.Response(
                 json.dumps({ "content": renderContent }), 200, mimetype='application/json')
     else:
@@ -314,7 +357,7 @@ def playerApi():
 @app.route("/player-api-cache")
 def playerApiCache():
     result = api.checkPlayerKnown(flask.request.args.get("id"))
-    if result:
+    if result and result[1] != 0:
         return ("OK", 200)
     else:
         return ("Nope", 404)

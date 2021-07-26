@@ -11,7 +11,7 @@ var checkPlayerFunc = function checkPlayer() {
         if(r.status == 200){
             this.style.background = "#74bb74"
         }else{
-            //this.style.background = "#d25252"
+            this.style.background = "#d25252"
         }
     })
 }
@@ -151,6 +151,8 @@ function balance(){
     
     prioBalanceCheckbox = document.getElementById("prio-balance")
     if(prioBalanceCheckbox.checked){
+    	dictAll["acceptable-solution-threshold"] = 0.5
+    }else{
     	dictAll["acceptable-solution-threshold"] = 0.7
     }
     jsonData = JSON.stringify(dictAll, null, 4);

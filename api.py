@@ -11,17 +11,18 @@ import datetime as dt
 import sqlite3
 
 REGION  = "euw1"
+DEFAULT_RATING = 1200
 
 def tierToNumber(tier):
-    ratingmap = {   'CHALLENGER' : 3500,
-                    'GRANDMASTER': 3000,
-                    'MASTER'     : 2500,
-                    'DIAMOND'    : 2000,
-                    'PLATINUM'   : 1500,
-                    'GOLD'       : 500,
-                    'SILVER'     : 0,
-                    'BRONZE'     : -500,
-                    'IRON'       : -1000 }
+    ratingmap = {   'CHALLENGER' : 4500,
+                    'GRANDMASTER': 4000,
+                    'MASTER'     : 3500,
+                    'DIAMOND'    : 3000,
+                    'PLATINUM'   : 2500,
+                    'GOLD'       : 1500,
+                    'SILVER'     : 1000,
+                    'BRONZE'     : 500,
+                    'IRON'       : 0 }
     return ratingmap[tier]
 
 def divisionToNumber(division):
@@ -41,13 +42,13 @@ def checkPlayerKnown(playerName):
     try:
         playerName, rating, lastUpdated = cursor.fetchone()
     except TypeError:
-        print("sqlite cache player not found")
+        print("sqlite cache '{}' not found".format(playerName))
         return None
     conn.close()
     return (playerName, rating, lastUpdated)
 
 def addToDB(playerName, rating):
-    
+
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     cursor.execute("INSERT INTO players VALUES(?,?,?);",(
@@ -55,13 +56,14 @@ def addToDB(playerName, rating):
                                         rating,
                                         dt.datetime.now().timestamp()))
     conn.commit()
+    print("Added {}".format(playerName))
     conn.close()
         
 
 def getPlayerRatingFromApi(playerName, WATCHER):
 
     if not playerName:
-        return 0
+        return DEFAULT_RATING
 
     tupel = checkPlayerKnown(playerName)
     if tupel:
@@ -74,7 +76,7 @@ def getPlayerRatingFromApi(playerName, WATCHER):
             # not found #
             if e.response.status_code == 404:
                 addToDB(playerName, 0)
-                return 0
+                return DEFAULT_RATING
             # rate limit
             elif e.response.status_code == 429:
                 print("Ratelimit reached")
@@ -84,9 +86,9 @@ def getPlayerRatingFromApi(playerName, WATCHER):
                 raise e
         if not pTmp:
             addToDB(playerName, 0)
-            return 0
+            return DEFAULT_RATING
 
-        computed = 0
+        computed = DEFAULT_RATING
         
         try:
             pInfo = WATCHER.league.by_summoner(REGION, pTmp["id"])
@@ -104,6 +106,6 @@ def getPlayerRatingFromApi(playerName, WATCHER):
             computed = tierToNumber(queue["tier"]) + divisionToNumber(queue["rank"]) + \
                                     int(queue["leaguePoints"])
             print(computed)
-            addToDB(playerName, computed)
 
+        addToDB(playerName, computed)
         return computed
