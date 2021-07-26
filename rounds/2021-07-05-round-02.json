@@ -1,0 +1,50 @@
+{
+    "map": "SR",
+    "winner-side": "1",
+    "winners": [
+        {
+            "playerId": "ESE TomTom",
+            "isFake": false
+        },
+        {
+            "playerId": "ENTAC",
+            "isFake": false
+        },
+        {
+            "playerId": "Area 522",
+            "isFake": false
+        },
+        {
+            "playerId": "Heinz sama",
+            "isFake": false
+        },
+        {
+            "playerId": "Téa Jay",
+            "isFake": false
+        }
+    ],
+    "losers": [
+        {
+            "playerId": "Phirop",
+            "isFake": false
+        },
+        {
+            "playerId": "lbfxd",
+            "isFake": false
+        },
+        {
+            "playerId": "Victor Lustig",
+            "isFake": false
+        },
+        {
+            "playerId": "ESE MarsUltor",
+            "isFake": false
+        },
+        {
+            "playerId": "Byndeskanzler",
+            "isFake": false
+        }
+    ],
+    "duration": 1978,
+    "startTime": "2021-07-05T21:00+02:00"
+}

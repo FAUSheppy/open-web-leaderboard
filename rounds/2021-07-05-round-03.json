@@ -1,0 +1,50 @@
+{
+    "map": "SR",
+    "winner-side": "0",
+    "winners": [
+        {
+            "playerId": "Phirop",
+            "isFake": false
+        },
+        {
+            "playerId": "ENTAC",
+            "isFake": false
+        },
+        {
+            "playerId": "Heinz sama",
+            "isFake": false
+        },
+        {
+            "playerId": "Victor Lustig",
+            "isFake": false
+        },
+        {
+            "playerId": "ESE MarsUltor",
+            "isFake": false
+        }
+    ],
+    "losers": [
+        {
+            "playerId": "Area 522",
+            "isFake": false
+        },
+        {
+            "playerId": "lbfxd",
+            "isFake": false
+        },
+        {
+            "playerId": "Téa Jay",
+            "isFake": false
+        },
+        {
+            "playerId": "Byndeskanzler",
+            "isFake": false
+        },
+        {
+            "playerId": "ESE TomTom",
+            "isFake": false
+        }
+    ],
+    "duration": 1804,
+    "startTime": "2021-07-05T22:00+02:00"
+}
