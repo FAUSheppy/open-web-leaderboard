@@ -152,7 +152,7 @@ class Player:
 submission = dict()
 @app.route("/role-submission", methods=['GET', 'POST'])
 def roleSubmissionTool():
-    positions=["Top", "Jungle", "Mid", "Support", "Bottom"]
+    positions=["Top", "Jungle", "Mid", "Bottom", "Support" ]
 
     ident = flask.request.args.get("id")
     if flask.request.method == 'POST':
@@ -192,11 +192,12 @@ def balanceToolData():
     return flask.Response(json.dumps(retDict), 200, mimetype='application/json')
 
 
+@app.route('/')
 @app.route("/balance-tool", methods=['GET', 'POST'])
 def balanceTool():
-    positions=["Top", "Jungle", "Mid", "Support", "Bottom"]
+    positions=["Top", "Jungle", "Mid", "Bottom", "Support"]
 
-    db = DatabaseConnection(app.config["DB_PATH"])
+    #db = DatabaseConnection(app.config["DB_PATH"])
 
     if flask.request.method == 'POST':
 
@@ -310,6 +311,14 @@ def playerApi():
     else:
         return ("Nope", 404)
 
+@app.route("/player-api-cache")
+def playerApiCache():
+    result = api.checkPlayerKnown(flask.request.args.get("id"))
+    if result:
+        return ("OK", 200)
+    else:
+        return ("Nope", 404)
+
 @app.route("/player")
 def player():
     '''Show Info about Player'''
@@ -366,7 +375,6 @@ def player():
                                     Y_MIN=yMin, Y_MAX=yMax)
 
 @app.route('/leaderboard')
-@app.route('/')
 @cache.cached(timeout=10, query_string=True)
 def leaderboard():
     '''Show main leaderboard page with range dependant on parameters'''
@@ -452,12 +460,6 @@ def send_js(path):
 
 @app.before_first_request
 def init():
-    SERVERS_FILE = "servers.json"
-    if os.path.isfile(SERVERS_FILE):
-        import valve.source.a2s
-        from valve.source import NoResponseError
-        with open(SERVERS_FILE) as f:
-            SERVERS = json.load(f)
 
     global WATCHER
     with open("key.txt","r") as f:
@@ -472,7 +474,7 @@ if __name__ == "__main__":
     parser.add_argument('--port', default="5002", \
             help='Port on which flask (this server) will take requests on')
 
-    parser.add_argument('--skillbird-db', required=True, help='skillbird database (overrides web connection if set)')
+    parser.add_argument('--skillbird-db', required=False, help='skillbird database (overrides web connection if set)')
    
     
     args = parser.parse_args()

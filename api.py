@@ -7,6 +7,8 @@ import os
 import time
 from jinja2 import Environment, FileSystemLoader
 import requests
+import datetime as dt
+import sqlite3
 
 REGION  = "euw1"
 
@@ -29,16 +31,41 @@ def divisionToNumber(division):
                     "IV"  : 0 }
     return divisionmap[division]
 
-cache   = dict()
-counter = 
+DATABASE = "rating_cache.sqlite"
+def checkPlayerKnown(playerName):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    backlog = dt.datetime.now() - dt.timedelta(days=7)
+    query = '''SELECT * from players where playerName = ? LIMIT 1;'''
+    cursor.execute(query, (playerName,))
+    try:
+        playerName, rating, lastUpdated = cursor.fetchone()
+    except TypeError:
+        print("sqlite cache player not found")
+        return None
+    conn.close()
+    return (playerName, rating, lastUpdated)
 
-def getCache():
-    return cache
+def addToDB(playerName, rating):
+    
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO players VALUES(?,?,?);",(
+                                        playerName,
+                                        rating,
+                                        dt.datetime.now().timestamp()))
+    conn.commit()
+    conn.close()
+        
 
 def getPlayerRatingFromApi(playerName, WATCHER):
 
-    if playerName in cache:
-        return cache[playerName]
+    if not playerName:
+        return 0
+
+    tupel = checkPlayerKnown(playerName)
+    if tupel:
+        return tupel[1]
 
     while(True):
         try:
@@ -46,7 +73,7 @@ def getPlayerRatingFromApi(playerName, WATCHER):
         except requests.exceptions.HTTPError as e:
             # not found #
             if e.response.status_code == 404:
-                cache[playerName] = 0
+                addToDB(playerName, 0)
                 return 0
             # rate limit
             elif e.response.status_code == 429:
@@ -56,7 +83,7 @@ def getPlayerRatingFromApi(playerName, WATCHER):
             else:
                 raise e
         if not pTmp:
-            cache[playerName] = 0
+            addToDB(playerName, 0)
             return 0
 
         computed = 0
@@ -77,6 +104,6 @@ def getPlayerRatingFromApi(playerName, WATCHER):
             computed = tierToNumber(queue["tier"]) + divisionToNumber(queue["rank"]) + \
                                     int(queue["leaguePoints"])
             print(computed)
-            cache.update( { playerName : computed })
+            addToDB(playerName, computed)
 
         return computed

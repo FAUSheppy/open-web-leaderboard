@@ -1,4 +1,4 @@
-positions = [ "Top", "Jungle", "Mid", "Support" , "Bottom" ]
+positions = [ "Top", "Jungle", "Mid", "Bottom", "Support" ]
 acceptedParser = [ "top", "jungle", "mid", "sup" , "bot", "adc", "support", "bottom", "*" ]
 sides = [ "left", "right"]
 
@@ -6,7 +6,7 @@ var checkPlayerFunc = function checkPlayer() {
     if(this.value == ""){
         return
     }
-    url = "/player?id=" + this.value
+    url = "/player-api-cache?id=" + this.value
     fetch(url).then(r => {
         if(r.status == 200){
             this.style.background = "#74bb74"
