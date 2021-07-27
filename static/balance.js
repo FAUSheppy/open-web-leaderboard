@@ -113,6 +113,7 @@ function balance(){
     
     cont = document.getElementById("response-container")
     cont.innerHTML = ""
+    cont.style.color = "black";
     sides  = ["left", "right"]
 
     blue = [ "", "", "", "", ""]
@@ -169,6 +170,10 @@ function balance(){
     }).then(r => r.json()).then(j => {
         spinner.style.display = "none";
         cont.innerHTML = j["content"]
+    }).catch(err => {
+        spinner.style.display = "none";
+        cont.style.color = "red";
+        cont.innerHTML = "Error - request failed."
     })
 
 }
