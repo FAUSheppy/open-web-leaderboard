@@ -75,13 +75,14 @@ def getPlayerRatingFromApi(playerName, WATCHER):
         except requests.exceptions.HTTPError as e:
             # not found #
             if e.response.status_code == 404:
-                addToDB(playerName, 0)
+                addToDB(playerName, DEFAULT_RATING)
                 return DEFAULT_RATING
             # rate limit
             elif e.response.status_code == 429:
                 print("Ratelimit reached")
-                time.sleep(120)
-                continue
+                #time.sleep(120)
+                #continue
+                return DEFAULT_RATING
             else:
                 raise e
         if not pTmp:
@@ -95,8 +96,9 @@ def getPlayerRatingFromApi(playerName, WATCHER):
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 429:
                 print("Ratelimit reached")
-                time.sleep(120)
-                continue
+                return DEFAULT_RATING
+                #time.sleep(120)
+                #continue
             else:
                 raise e
 

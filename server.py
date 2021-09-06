@@ -323,8 +323,11 @@ def balanceTool():
             retDict["left"].update( { positions[i] : bestOptionWithRating[i].name   })
             retDict["right"].update({ positions[i] : bestOptionWithRating[i+5].name })
 
+        import sys
+        print(flask.request.json, file=sys.stderr)
+        print(retDict, file=sys.stderr)
         renderContent = flask.render_template("balance_response_partial.html", d=retDict,
-                                                requests=flask.request.json,
+                                                reqJson=flask.request.json,
                                                 positions=positions,
                                                 ratings=bestOptionRatings,
                                                 qualityPositions=int(theoMin/best*100),

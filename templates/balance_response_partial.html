@@ -11,12 +11,16 @@
 			{{ positions[x] }}
 		</div>
 		<div class="col-sm" 
-			{% if requests[leftP][x] | int >= 4 %}style="background: red;"{% endif %}>
-			{{ leftP }} ({{ ratings[x] }})
+		    {% if reqJson.get(leftP) and reqJson.get(leftP)[x] | int >= 4 %}
+		    style="background: red;"
+		    {% endif %}>
+		    {{ leftP }} ({{ ratings[x] }})
 		</div>
 		<div class="col-sm"
-			{% if requests[rightP][x] | int >= 4 %}style="background: red;"{% endif %}>
-			{{ rightP }} ({{ ratings[x+5] }})
+		    {% if reqJson.get(rightP) and reqJson.get(rightP)[x] | int >= 4 %}
+		    style="background: red;"
+		    {% endif %}>
+		    {{ rightP }} ({{ ratings[x+5] }})
 		</div>
 	</div>
 	{% endfor %}
