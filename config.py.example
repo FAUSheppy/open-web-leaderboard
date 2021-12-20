@@ -1,2 +1,0 @@
-# rename to config.py and remove this line for this file to have effect
-DB_PATH="players.sqlite"

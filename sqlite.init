@@ -1,5 +1,0 @@
-CREATE TABLE players(
-    playerName TEXT PRIMARY KEY,
-    rating INTEGER,
-    lastupdated TEXT
-);

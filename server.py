@@ -3,18 +3,14 @@ import flask
 import requests
 import argparse
 import datetime
-import flask_caching as fcache
 import itertools
 import json
 import os
-import MapSummary
 import random
 import secrets
 import riotwatcher
 import time
 import statistics
-
-from database import DatabaseConnection
 import api
 
 
@@ -23,152 +19,90 @@ app = flask.Flask("open-leaderboard")
 WATCHER = None
 KEY     = None
 
-
 if os.path.isfile("config.py"):
     app.config.from_object("config")
-
-cache = fcache.Cache(app, config={'CACHE_TYPE': 'simple'})
-cache.init_app(app)
 
 SEGMENT=100
 SERVERS=list()
 
+from sqlalchemy import Column, Integer, String, Boolean, or_, and_
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.sql import func
+import sqlalchemy
+from flask_sqlalchemy import SQLAlchemy
 
+db = SQLAlchemy(app)
 
-def prettifyMinMaxY(computedMin, computedMax):
-    if computedMax > 0 and computedMin > 0:
-        return (0, 4000)
-    else:
-        return (computedMin - 100, 4000)
+POSITIONS_NAMES = ["Top", "Jungle", "Mid", "Bottom", "Support" ]
+DATABASE_PRIO_NAMES = ["prioTop", "prioJungle", "prioMid", "prioBot", "prioSupport" ]
+TYPE_JSON = 'application/json'
 
-@app.route("/players-online")
-def playersOnline():
-    '''Calc and return the online players'''
+HTTP_OK = 200
 
-    playerTotal = 0
-    error       = ""
+class PlayerInDatabase(db.Model):
+    __tablename__ = "players"
+    player        = Column(String, primary_key=True)
+    rating        = Column(Integer)
+    ratingFix     = Column(Integer)
+    lastUpdated   = Column(Integer)
 
-    for s in SERVERS:
-        try:
-            with valve.source.a2s.ServerQuerier((args.host, args.port)) as server:
-                playerTotal += int(server.info()["player_count"])
-        except NoResponseError:
-            error = "Server Unreachable"
-        except Exception as e:
-            error = str(e)
-
-    retDict = { "player_total" : playerTotal, "error" : error }
-    return flask.Response(json.dumps(retDict), 200, mimetype='application/json')
-            
-    
-
-@app.route("/round-info")
-def singleRound():
-    '''Display info about a single round itdentified by it's timestamp'''
-
-    timestamp = flask.request.args.get("id")
-    if not timestamp:
-        return ("ID Missing", 404)
-    if not timestamp.endswith(".0"):
-        timestamp = timestamp + ".0"
-    db = DatabaseConnection(app.config["DB_PATH"])
-    r = db.getRoundByTimestamp(timestamp)
-    if not r:
-        return ("Round not found", 404)
-    elif r.blacklist:
-        return ("Unavailable due to pending GDPR deletion request", 451)
-    r = db.calcRatingChanges(r)
-
-    if not r:
-        return ("", 404)
-
-    r.winners = sorted(r.winners, key=lambda p: p.participation, reverse=True)
-    r.losers = sorted(r.losers, key=lambda p: p.participation, reverse=True)
-
-    return flask.render_template("single_round.html", r=r) 
-
-@app.route("/livegames")
-def liveGames():
-    '''Display info about a single round itdentified by it's timestamp'''
-
-    db = DatabaseConnection(app.config["DB_PATH"])
-    rounds = db.getLiveGames()
-    return flask.render_template("livegames.html", liveGameRounds=rounds, noRounds=not bool(rounds))
-
-@app.route("/rounds-by-timestamp")
-@app.route("/rounds")
-def rounds():
-    '''Show rounds played on the server'''
-    
-    start = flask.request.args.get("start")
-    end   = flask.request.args.get("end")
-    
-    if not start or not end:
-        start = datetime.datetime.now() - datetime.timedelta(days=365)
-        end   = datetime.datetime.now()
-    else:
-        start = datetime.datetime.fromtimestamp(start)
-        end   = datetime.datetime.fromtimestamp(end)
-    
-    db = DatabaseConnection(app.config["DB_PATH"])
-    rounds = db.roundsBetweenDates(start, end)
-
-    return flask.render_template("rounds.html", rounds=rounds)
-
-
-    # get timestamp
-    # display players
-    # display rating change
-    # display outcome
-    # display map
+class Submission(db.Model):
+    __tablename__ = "submissions"
+    ident         = Column(String, primary_key=True)
+    submissionId  = Column(String)
+    player        = Column(String)
+    prioTop       = Column(Integer)
+    prioJungle    = Column(Integer)
+    prioMid       = Column(Integer)
+    prioBot       = Column(Integer)
+    prioSupport   = Column(Integer)
 
 class Player:
     def __init__(self, name, prio):
-            self.name = name
-            self.prio = prio
+        self.name = name
+        self.prio = prio
 
-# TODO
-submission = dict()
 @app.route("/role-submission", methods=['GET', 'POST'])
 def roleSubmissionTool():
-    positions=["Top", "Jungle", "Mid", "Bottom", "Support" ]
 
-    ident = flask.request.args.get("id")
+    submissionId = flask.request.args.get("id")
+    player = flask.request.args.get("player")
+
     if flask.request.method == 'POST':
 
-        if not ident in submission:
-            submission.update({ ident : [] })
-        
-        tmp = dict()
-        tmp.update({ "name" : flask.request.form["playername"] })
-        for p in positions:
-            tmp.update({ p : flask.request.form["prio_{}".format(p)] })
+        submissionQuery = db.session.query(PlayerInDatabase)
+        identKey = "{}-{}".format(submissionId, player)
+        submission = submissionQuery.filter(PlayerInDatabase.ident == identKey).first()
 
-        existed = False
-        for pl in submission[ident]:
-            if pl["name"] == tmp["name"]:
-                for p in positions:
-                    pl.update({ p : flask.request.form["prio_{}".format(p)] })
-                existed = True
-                break;
+        if not submission:
+            submission = Submission(identKey, submissionId, player, -1, -1, -1, -1, -1)
 
-        if not existed:
-            submission[ident] += [tmp]
+        for i in range(0, 5):
+            formKey = "prio_" + POSITIONS_NAMES[i]
+            setattr(submission, DATABASE_PRIO_NAMES[i], flask.request.form[formKey])
 
-        return flask.redirect("/balance-tool?id={}".format(ident))
+        db.session.merge(submission)
+        db.session.commit()
+
+        return flask.redirect("/balance-tool?id=" + ident)
     else:
-        return flask.render_template("role_submission.html", 
-                                    positions=positions,
-                                    ident=ident)
+        return flask.render_template("role_submission.html", positions=positions, ident=ident)
 
 @app.route("/balance-tool-data")
 def balanceToolData():
-    ident = flask.request.args.get("id")
-    retDict = dict()
-    if not ident in submission:
-        return flask.Response(json.dumps({ "no-data" : False }), 200, mimetype='application/json')
-    retDict.update({ "submissions" : submission[ident] })
-    return flask.Response(json.dumps(retDict), 200, mimetype='application/json')
+
+    submissionId = flask.request.args.get("id")
+    submissionsQuery = db.session.query(PlayerInDatabase)
+    submissions = submissionsQuery.filter(PlayerInDatabase.submissionId == submissionId).all()
+
+    if not submissions:
+        return flask.Response(json.dumps({ "no-data" : False }), HTTP_OK, mimetype=TYPE_JSON)
+
+    retDict.update()
+
+    dicts = [ s.toDict() for s in submissions ]
+    return flask.Response(json.dumps({ "submissions" : dicts }), HTTP_OK, mimetype=TYPE_JSON)
 
 
 @app.route('/')
@@ -323,9 +257,6 @@ def balanceTool():
                                     positions=positions,
                                     sides=["left", "right"],
                                     ident=ident)
-@app.route("/get-cache")
-def getCacheLoc():
-    return (json.dumps(api.getCache()), 200)
 
 @app.route("/player-api")
 def playerApi():
@@ -343,140 +274,9 @@ def playerApiCache():
     else:
         return ("Nope", 404)
 
-@app.route("/player")
-def player():
-    '''Show Info about Player'''
-
-    playerId = flask.request.args.get("id")
-    if(not playerId):
-        return ("", 404)
-
-    db = DatabaseConnection(app.config["DB_PATH"])
-    player = db.getPlayerById(playerId)
-
-    if(not player):
-        return ("", 404)
-
-    player.rank = db.getPlayerRank(player)
-    histData = db.getHistoricalForPlayerId(playerId)
-
-    csv_month_year = []
-    csv_ratings = []
-    csv_timestamps = []
-
-    minRating = 3000
-    maxRating = 0
-
-    if histData:
-        datapoints = histData[playerId]
-        if datapoints:
-
-            tickCounter = 10
-            for dpk in datapoints.keys():
-                t = datetime.datetime.fromtimestamp(int(float(dpk)))
-                tsMs = str(int(t.timestamp() * 1000))
-                ratingString = str(int(datapoints[dpk]["mu"]) - 2*int(datapoints[dpk]["sigma"]))
-                ratingAmored = '{ x : ' + tsMs + ', y : ' + ratingString + '}'
-                csv_timestamps += [str(tsMs)]
-                csv_ratings += [ratingAmored]
-                
-                tickCounter -= 1
-                if tickCounter <= 0:
-                    tickCounter = 10
-                    csv_month_year += ['new Date({})'.format(tsMs)]
-
-                minRating = min(minRating, int(ratingString))
-                maxRating = max(maxRating, int(ratingString))
-
-    yMin, yMax = prettifyMinMaxY(minRating, maxRating)
-    
-    # change displayed rank to start from 1 :)
-    player.rank += 1
-
-    return flask.render_template("player.html", player=player, CSV_RATINGS=",".join(csv_ratings), 
-                                    CSV_MONTH_YEAR_OF_RATINGS=",".join(csv_month_year),
-                                    CSV_TIMESTAMPS=csv_timestamps,
-                                    Y_MIN=yMin, Y_MAX=yMax)
-
-@app.route('/leaderboard')
-@cache.cached(timeout=10, query_string=True)
-def leaderboard():
-    '''Show main leaderboard page with range dependant on parameters'''
-
-    # parse parameters #
-    page        = flask.request.args.get("page")
-    playerName  = flask.request.args.get("string")
-    db = DatabaseConnection(app.config["DB_PATH"])
-
-    if page:
-        pageInt = int(page)
-        if pageInt < 0:
-            pageInt = 0
-        start = SEGMENT * int(page)
-    else:
-        pageInt = 0
-        start = 0
-
-    # handle find player request #
-    cannotFindPlayer = ""
-    searchName = ""
-
-    playerList = None
-    doNotComputeRank = True
-    if playerName:
-        playersInLeaderboard = db.findPlayerByName(playerName)
-        if not playersInLeaderboard:
-            cannotFindPlayer = flask.Markup("<div class=noPlayerFound>No player of that name</div>")
-            start = 0
-        else:
-            if len(playersInLeaderboard) == 1:
-                rank = playersInLeaderboard[0].rank
-                if(playersInLeaderboard[0].games < 10):
-                    return flask.redirect("/player?id={}".format(playersInLeaderboard[0].playerId))
-                searchName = playersInLeaderboard[0].name
-                start = rank - (rank % SEGMENT)
-            else:
-                playerList = playersInLeaderboard
-                for p in playerList:
-                    if p.rank == -1:
-                        p.rankStr = "N/A"
-                    else:
-                        p.rankStr = str(p.rank)
-                doNotComputeRank = False
-
-    reachedEnd = False
-    maxEntry = 0
-    if not playerList:            
-        # compute range #
-        end = start + SEGMENT
-        maxEntry = db.getTotalPlayers()
-        reachedEnd = False
-        if end > maxEntry:
-            start = maxEntry - ( maxEntry % SEGMENT ) - 1
-            end   = maxEntry - 1
-            print(maxEntry)
-            reachedEnd = True
-
-        playerList = db.getRankRange(start, end)
-    
-    endOfBoardIndicator = ""
-    if reachedEnd:
-        endOfBoardHtml = "<div id='eof' class=endOfBoardIndicator> - - - End of Board - - - </div>"
-        endOfBoardIndicator = flask.Markup(endOfBoardHtml)
-    
-    # fix <100 player start at 0 #
-    if maxEntry <= 100:
-        start = max(start, 0)
-    
-    finalResponse = flask.render_template("base.html", playerList=playerList, \
-                                                        doNotComputeRank=doNotComputeRank, \
-                                                        start=start, \
-                                                        endOfBoardIndicator=endOfBoardIndicator, \
-                                                        findPlayer=cannotFindPlayer, \
-                                                        searchName=searchName,
-                                                        nextPageNumber=int(pageInt)+1,
-                                                        prevPageNumber=int(pageInt)-1)
-    return finalResponse
+@app.route("/get-cache")
+def getCacheLoc():
+    return (json.dumps(api.getCache()), 200)
 
 @app.route('/static/<path:path>')
 def send_js(path):
@@ -486,22 +286,22 @@ def send_js(path):
 def init():
 
     global WATCHER
+
+    app.config["DB"] = db
+    db.create_all()
+
     with open("key.txt","r") as f:
         key = f.read().strip()
         WATCHER = riotwatcher.LolWatcher(key)
 
 if __name__ == "__main__":
+
     parser = argparse.ArgumentParser(description='Start open-leaderboard', \
                                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--interface', default="localhost", \
-            help='Interface on which flask (this server) will take requests on')
-    parser.add_argument('--port', default="5002", \
-            help='Port on which flask (this server) will take requests on')
-
-    parser.add_argument('--skillbird-db', required=False, help='skillbird database (overrides web connection if set)')
-   
+    parser.add_argument('--interface', default="localhost")
+    parser.add_argument('--port', default="5002")
     
     args = parser.parse_args()
-    app.config["DB_PATH"] = args.skillbird_db
+
     app.config["TEMPLATES_AUTO_RELOAD"] = True
     app.run(host=args.interface, port=args.port)
