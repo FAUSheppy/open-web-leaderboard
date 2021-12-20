@@ -13,6 +13,8 @@ import time
 import statistics
 import api
 
+from constants import *
+
 
 app = flask.Flask("open-leaderboard")
 
@@ -34,12 +36,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy(app)
 
-POSITIONS_NAMES = ["Top", "Jungle", "Mid", "Bottom", "Support" ]
-DATABASE_PRIO_NAMES = ["prioTop", "prioJungle", "prioMid", "prioBot", "prioSupport" ]
-TYPE_JSON = 'application/json'
-
-HTTP_OK = 200
-
 class PlayerInDatabase(db.Model):
     __tablename__ = "players"
     player        = Column(String, primary_key=True)
@@ -57,6 +53,13 @@ class Submission(db.Model):
     prioMid       = Column(Integer)
     prioBot       = Column(Integer)
     prioSupport   = Column(Integer)
+
+    def toDict():
+        pass
+
+    def affinityFor(self, posIndex):
+        prio = getattr(self, DATABASE_PRIO_NAMES[posIndex]) 
+        return prio
 
 class Player:
     def __init__(self, name, prio):
@@ -108,9 +111,6 @@ def balanceToolData():
 @app.route('/')
 @app.route("/balance-tool", methods=['GET', 'POST'])
 def balanceTool():
-    positions=["Top", "Jungle", "Mid", "Bottom", "Support"]
-
-    #db = DatabaseConnection(app.config["DB_PATH"])
 
     if flask.request.method == 'POST':
 
