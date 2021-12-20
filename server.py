@@ -95,28 +95,6 @@ def liveGames():
     rounds = db.getLiveGames()
     return flask.render_template("livegames.html", liveGameRounds=rounds, noRounds=not bool(rounds))
 
-@app.route("/maps")
-def maps():
-    '''Show an overview of maps'''
-    
-    db = DatabaseConnection(app.config["DB_PATH"])
-    start = datetime.datetime.now() - datetime.timedelta(days=4000)
-    end = datetime.datetime.now()
-    rounds = db.roundsBetweenDates(start, end)
-    distinctMaps = db.distinctMaps()
-    maps = []
-    for mapName in [ tupel[0]  for tupel in distinctMaps]:
-        roundsWithMap = list(filter(lambda r: r.mapName == mapName , rounds))
-        maps += [MapSummary.MapSummary(roundsWithMap)]
-
-    allMaps = MapSummary.MapSummary(rounds)
-    allMaps.mapName = "All Maps*"
-    maps += [allMaps]
-    
-
-    mapsFiltered = filter(lambda x: x.mapName, maps)
-    return flask.render_template("maps.html", maps=mapsFiltered)
-
 @app.route("/rounds-by-timestamp")
 @app.route("/rounds")
 def rounds():
