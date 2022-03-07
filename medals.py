@@ -78,7 +78,7 @@ def getMedals(ratingList, gamesPlayed, currentRating):
         medals += [medalGen(medalDict["rating-2k-1"], games2k)]
     
     if games3k > 200:
-        medals += [medalGen(medalDict["rating-3k-3"], game3k)]
+        medals += [medalGen(medalDict["rating-3k-3"], games3k)]
     
     if games3k > 50:
         medals += [medalGen(medalDict["rating-3k-2"], games3k)]
