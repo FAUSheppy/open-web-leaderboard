@@ -10,8 +10,8 @@ import os
 import MapSummary
 
 from database import DatabaseConnection
-import valve.source.a2s
-from valve.source import NoResponseError
+#import valve.source.a2s
+#from valve.source import NoResponseError
 
 
 app = flask.Flask("open-leaderboard")
@@ -42,8 +42,9 @@ def playersOnline():
 
     for s in SERVERS:
         try:
-            with valve.source.a2s.ServerQuerier((s["host"], s["port"])) as server:
-                playerTotal += int(server.info()["player_count"])
+            pass
+        #with valve.source.a2s.ServerQuerier((s["host"], s["port"])) as server:
+        #        playerTotal += int(server.info()["player_count"])
         except NoResponseError:
             error = "Server Unreachable"
         except Exception as e:
@@ -276,11 +277,11 @@ def leaderboard():
     if maxEntry <= 100:
         start = max(start, 0)
     
-    finalResponse = flask.render_template("base.html", playerList=playerList, \
-                                                        doNotComputeRank=doNotComputeRank, \
-                                                        start=start, \
-                                                        endOfBoardIndicator=endOfBoardIndicator, \
-                                                        findPlayer=cannotFindPlayer, \
+    finalResponse = flask.render_template("base.html", playerList=playerList,
+                                                        doNotComputeRank=doNotComputeRank,
+                                                        start=start,
+                                                        endOfBoardIndicator=endOfBoardIndicator,
+                                                        findPlayer=cannotFindPlayer,
                                                         searchName=searchName,
                                                         nextPageNumber=int(pageInt)+1,
                                                         prevPageNumber=int(pageInt)-1)
@@ -288,12 +289,14 @@ def leaderboard():
 
 @app.route('/static/<path:path>')
 def send_js(path):
+
     response = send_from_directory('static', path)
     response.headers['Cache-Control'] = "max-age=2592000"
     return response
 
-@app.before_first_request
-def init():
+
+def create_app():
+
     global SERVERS
 
     SERVERS_FILE = "servers.json"
@@ -302,16 +305,19 @@ def init():
             SERVERS = json.load(f)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Start open-leaderboard', \
-                                        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--interface', default="localhost", \
-            help='Interface on which flask (this server) will take requests on')
-    parser.add_argument('--port', default="5002", \
-            help='Port on which flask (this server) will take requests on')
 
-    parser.add_argument('--skillbird-db', required=True, help='skillbird database (overrides web connection if set)')
-   
-    
+    parser = argparse.ArgumentParser(description='Start open-leaderboard',
+            formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('--interface', default="localhost",
+            help='Interface on which flask (this server) will take requests on')
+    parser.add_argument('--port', default="5002",
+            help='Port on which flask (this server) will take requests on')
+    parser.add_argument('--skillbird-db', required=True, 
+            help='skillbird database (overrides web connection if set)')
+
+    with app.app_context():
+        create_app()
+
     args = parser.parse_args()
     app.config["DB_PATH"] = args.skillbird_db
     app.run(host=args.interface, port=args.port)
