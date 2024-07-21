@@ -33,6 +33,7 @@ Players can be blacklisted by name via a *blacklist.json* file in the project ro
     }
 
 # Adding servers for player count live info
+**THIS FEATURE IS DISABLED BECAUSE py-valve DOES NOT SUPPORT PYTHON>3.9**
 Source-Servers can be added via the *servers.json*-file:
 
     [
